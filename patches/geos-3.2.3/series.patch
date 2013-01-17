@@ -1,0 +1,13 @@
+CoordinateSequenceFactory.h
+Bintree.cpp
+Node.cpp
+Root.cpp
+MonotoneChainBuilder.h
+AbstractNode.cpp
+SimpleNestedRingTester.h
+DirectedEdgeStar.h
+DouglasPeuckerLineSimplifier.h
+TaggedLineString.cpp
+TaggedLineString.h
+TaggedLineStringSimplifier.h
+swig

@@ -1,0 +1,13 @@
+Index: port/cpl_strtod.cpp
+===================================================================
+--- port/cpl_strtod.cpp	(revision 21647)
++++ port/cpl_strtod.cpp	(working copy)
+@@ -172,7 +172,7 @@
+ 
+ static void CPLReplacePointByLocalePoint(char* pszNumber, char point)
+ {
+-#if defined(WIN32CE)
++#if defined(WIN32CE) || defined(__ANDROID__)
+     static char byPoint = 0;
+     if (byPoint == 0)
+     {

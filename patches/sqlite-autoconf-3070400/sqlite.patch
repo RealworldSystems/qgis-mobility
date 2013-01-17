@@ -1,0 +1,14 @@
+--- configure	2010-12-07 21:29:33.000000000 +0100
++++ x/configure	2012-06-12 17:25:54.579599809 +0200
+@@ -9911,6 +9911,11 @@
+ need_version=unknown
+ 
+ case $host_os in
++linux-android*)
++  library_names_spec='$libname${shared_ext}'
++  soname_spec='${libname}${shared_ext}'
++  ;;
++
+ aix3*)
+   version_type=linux
+   library_names_spec='${libname}${release}${shared_ext}$versuffix $libname.a'

@@ -1,0 +1,32 @@
+*** Makefile-libbz2_so	2010-09-11 01:07:52.000000000 +0200
+--- Makefile-libbz2_so.2	2012-08-28 12:26:40.729691551 +0200
+***************
+*** 35,47 ****
+        bzlib.o
+  
+  all: $(OBJS)
+! 	$(CC) -shared -Wl,-soname -Wl,libbz2.so.1.0 -o libbz2.so.1.0.6 $(OBJS)
+  	$(CC) $(CFLAGS) -o bzip2-shared bzip2.c libbz2.so.1.0.6
+  	rm -f libbz2.so.1.0
+  	ln -s libbz2.so.1.0.6 libbz2.so.1.0
+  
+  clean: 
+! 	rm -f $(OBJS) bzip2.o libbz2.so.1.0.6 libbz2.so.1.0 bzip2-shared
+  
+  blocksort.o: blocksort.c
+  	$(CC) $(CFLAGS) -c blocksort.c
+--- 35,48 ----
+        bzlib.o
+  
+  all: $(OBJS)
+! 	$(CC) -shared -Wl,-soname -Wl,libbz2.so -o libbz2.so.1.0.6 $(OBJS)
+  	$(CC) $(CFLAGS) -o bzip2-shared bzip2.c libbz2.so.1.0.6
+  	rm -f libbz2.so.1.0
+  	ln -s libbz2.so.1.0.6 libbz2.so.1.0
++ 	ln -s libbz2.so.1.0.6 libbz2.so
+  
+  clean: 
+! 	rm -f $(OBJS) bzip2.o libbz2.so.1.0.6 libbz2.so.1.0 bzip2-shared libbz2.so.1.0
+  
+  blocksort.o: blocksort.c
+  	$(CC) $(CFLAGS) -c blocksort.c

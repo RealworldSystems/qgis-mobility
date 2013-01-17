@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+
+
+import os, sys, inspect
+
+def version_wrong():
+    raise ValueError("Target version is 2.7, you are using a different version")
+
+# Version check, we want version 2.7, as this is the version we use for
+# maintenance and development
+
+info = sys.version_info
+info_dir = dir(info)
+# First check if major and minor are actually defined
+
+if not ('major' in info_dir and 'minor' in info_dir): version_wrong()
+if not (info.major == 2 and info.minor == 7): version_wrong()
+
+# Get the current path
+current_path = os.path.realpath(os.path.dirname(
+    inspect.getfile(inspect.currentframe())))
+
+# Create the library path from this
+lib_path = os.path.abspath(os.path.join(current_path, "..", "lib"))
+
+sys.path.append(lib_path)
+
+
+from qgis_mobility.generator.main import run
+
+run()
