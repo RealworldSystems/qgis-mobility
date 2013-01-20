@@ -266,11 +266,11 @@ class Builder(object):
         print "Autogeneration done"
         
 
-    def run_autotools_and_make(self, where=None, harness=True):
+    def run_autotools_and_make(self, where=None, harness=True, runmakeinstall=True):
         harnessed_source_path = self.get_current_source_path()
         if harness:
             harnessed_source_path = os.path.join(self.get_current_source_path(), 'harness')
-            os.makedirs(harnessed_source_path)
+            if not os.path.exists(harnessed_source_path): os.makedirs(harnessed_source_path)
 
         our_env = dict(os.environ).copy()
         our_env['PATH'] = self.get_path()
@@ -288,8 +288,8 @@ class Builder(object):
         args = [os.path.join(where, 'configure')]
         args.extend(environmental)
         args.extend(self.get_default_configure_flags())
-
-        all_processes = [args, ['make'], ['make', 'install']]
+        all_processes = [args]
+        if runmakeinstall: all_processes.extend([['make'], ['make', 'install']])
         for arguments in all_processes:
             process = Popen(arguments, cwd=harnessed_source_path, env=our_env)
             process.communicate(None)

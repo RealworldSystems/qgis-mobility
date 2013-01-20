@@ -18,6 +18,8 @@ class Recon(object):
                                      "Qt", "482", "armeabi")
         self._qt_tools_path = os.path.join(self._qt_path, "bin")
         self._android_level = 14
+        self._ndk_platform = os.path.join(self._ndk_path, 'platforms', 'android-' + 
+                                          str(self._android_level), 'arch-arm')
         self.verify()
     
     def get_necessitas_path(self): 
@@ -53,6 +55,9 @@ class Recon(object):
 
     def get_toolchain_path(self):
         return os.path.join(self.get_cache_path(), 'toolchain')
+    
+    def get_ndk_platform(self):
+        return self._ndk_platform
 
     necessitas_path = property(get_necessitas_path, None, None, "The necessitas path")
     ndk_path        = property(get_ndk_path,        None, None, "The Android NDK path")
@@ -60,6 +65,7 @@ class Recon(object):
     qt_tools_path   = property(get_qt_tools_path,   None, None, "The Android QT Tools path")
     qt_path         = property(get_qt_path,         None, None, "The Android QT path")
     android_level   = property(get_android_level,   None, None, "The Android Level to use")
+    ndk_platform    = property(get_ndk_platform,    None, None, "The NDK platform to use")
 
     def paths(self):
         """ Returns a map of the defined paths """

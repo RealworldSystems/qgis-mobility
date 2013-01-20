@@ -11,6 +11,7 @@ from qgis_mobility.generator.gdal_builder import GDALBuilder
 from qgis_mobility.generator.gsl_builder import GSLBuilder
 from qgis_mobility.generator.qwt_builder import QWTBuilder
 from qgis_mobility.generator.spatialindex_builder import SpatialindexBuilder
+from qgis_mobility.generator.python_builder import PythonBuilder
 from qgis_mobility.generator.qgis_builder import QGisBuilder
 
 class Recipe(object):
@@ -33,3 +34,4 @@ class Recipe(object):
         QWTBuilder(recon).make()
         SpatialindexBuilder(recon).make()
         QGisBuilder(recon).make()
+        PythonBuilder(recon).make()
