@@ -13,6 +13,7 @@ from qgis_mobility.generator.qwt_builder import QWTBuilder
 from qgis_mobility.generator.spatialindex_builder import SpatialindexBuilder
 from qgis_mobility.generator.python_builder import PythonBuilder
 from qgis_mobility.generator.qgis_builder import QGisBuilder
+from qgis_mobility.generator.sip_builder import SipBuilder
 
 class Recipe(object):
     def __init__(self, recon):
@@ -35,3 +36,4 @@ class Recipe(object):
         SpatialindexBuilder(recon).make()
         QGisBuilder(recon).make()
         PythonBuilder(recon).make()
+        SipBuilder(recon).make()

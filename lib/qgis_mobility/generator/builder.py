@@ -4,6 +4,7 @@ import subprocess
 from subprocess import Popen
 import re
 
+
 class Builder(object):
     """ Represents an abstract object to aid in building the different sources """
     
@@ -70,6 +71,7 @@ class Builder(object):
             print "Already Done"
     
     def purge(self):
+        
         if os.path.exists(self.get_build_path()):
             shutil.rmtree(self.get_build_path())
         if os.path.exists(self.get_source_path()):
@@ -120,6 +122,15 @@ class Builder(object):
         return os.path.join(self.cache_path, "build", self._library_name)
     
     build_path = property(get_build_path, None, None, "The path with the builds")
+
+
+    def get_output_library_path(self):
+        """ Returns the path where normally libraries should be found """
+        return os.path.join(self.get_build_path(), 'lib')
+
+    def get_output_binaries_path(self):
+        """ Returns the path where normally the binaries should be found """
+        return os.path.join(self.get_build_path(), 'bin')
     
     def get_include_path(self):
         return os.path.join(self.cache_path, "include", self._library_name)

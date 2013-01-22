@@ -27,6 +27,11 @@ class PythonBuilder(Builder):
         """ Also return the path of the ndk itself """
         return os.pathsep.join([self.get_recon().get_ndk_path(),
                                 Builder.get_path(self)])
+
+    def get_include_path(self):
+        """ The library path is in the build path """
+        return os.path.join(self.get_build_path(), 'include', 'python2.7')
+    
     def do_download_cache(self):
         """
         Performs a check whether the library has been downloaded,
@@ -155,9 +160,6 @@ class PythonBuilder(Builder):
         self.autotools_cleanse()
         
         module = 'libpython2.7.so'
-        #our_env['BLDSHARED'] = module_flags['BLDSHARED']
-        #our_env['RUNSHARED'] = ' '.join(['LD_LIBRARY_PATH=' + self.get_current_source_path(),
-        #                                 'PATH=' + os.pathsep.join([host_python_vars.bin, path])])
 
         module_make_args = ['make', '-j' + str(multiprocessing.cpu_count()),
                             'HOSTPYTHON=' + host_python_vars.python,
@@ -168,17 +170,6 @@ class PythonBuilder(Builder):
                             'BUILDARCH=x86_64-linux-gnu',
                             'INSTSONAME=libpython2.7.so',
                             module]
-
-
-        # The sqlite module detection is odd, it replaces the known -I directives, need to have it
-        # Create symlink to ../jni/sqlite3
-        
-        #sqlite3_jni_path = os.path.join(self.get_source_path(), 'jni', 'sqlite3')
-
-        #os.makedirs(os.path.join(self.get_source_path(), 'jni'))
-
-        #os.symlink(SQLiteBuilder(self.get_recon()).get_include_path(),
-        #           sqlite3_jni_path)
 
         process = subprocess.Popen(module_make_args, env=our_env, 
                                    cwd=self.get_current_source_path())
