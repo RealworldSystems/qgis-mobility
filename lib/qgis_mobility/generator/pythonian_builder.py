@@ -2,6 +2,7 @@ from qgis_mobility.generator.builder import Builder
 
 import os
 import subprocess
+import shutil
 
 from qgis_mobility.generator.python_builder import PythonBuilder
 
@@ -13,19 +14,10 @@ class PythonianBuilder(Builder):
         self._python_builder = PythonBuilder(recon)
         self._host_python_vars = self._python_builder.get_host_python_vars()
     
-    def make(self):
-        print "=" * 80
-        print self.human_name()
-        print "=" * 80
-        if not self.build_finished:
-            #self.purge()
-            self._verify_cache()
-            self._verify_build_path()
-            self._verify_source_path()
-            self._verify_include_path()
-            self.do_build()
-        else:
-            print "Already Done"
+
+    def purge(self):
+        if os.path.exists(self.get_source_path()):
+            shutil.rmtree(self.get_source_path())
 
     def get_include_path(self):
         """ Overrides the default include path """
@@ -53,20 +45,29 @@ class PythonianBuilder(Builder):
         return os.path.join(self._python_builder.get_build_path(),
                             'share', 'sip')
 
-    def run_py_configure(self, options=[]):
+    def run_py_configure(self, options=[], host=False):
         """ Adds the python configure.py runner, akin autoconf """
+
         
         our_env = dict(os.environ).copy()
-        our_env['PATH'] = self.get_path()
+        if not host: 
+            mappings = self.get_default_toolchain_mappings()
+            our_env['PATH'] = os.pathsep.join([self.get_recon().qt_tools_path, 
+                                               self.get_path()])
+            our_env['QMAKESPEC'] = 'android-g++'
+            for mapping in mappings: our_env[mapping] = mappings[mapping]
         
         args = [self._host_python_vars.python,
-                'configure.py',
-                '-b' + self.get_output_binaries_path(),
-                '-d' + self.get_site_packages_path(),
-                '-e' + self.get_include_path(),
-                '-v' + self.get_sip_path(),
-                '-pandroid-g++']
+                'configure.py']
+
+        if not host: args.extend(
+                ['-b' + self.get_output_binaries_path(),
+                 '-d' + self.get_site_packages_path(),
+                 '-v' + self.get_sip_path()])
+
         args.extend(options)
+
+        
         
         print "Process arguments:", args
         
@@ -79,13 +80,21 @@ class PythonianBuilder(Builder):
             
         print "Python Configure Done"
         
-    def run_make(self, install=False):
+    def run_make(self, install=False, host=False, command=None, makeopts=[]):
         args = ['make']
         
         if install: args.extend(['install'])
 
+        if command != None and (not install):
+            args.extend([command])
+
+        args.extend(makeopts)
+
         our_env = dict(os.environ).copy()
-        our_env['PATH'] = self.get_path()
+
+        if not host: our_env['PATH'] = self.get_path()
+
+        print args
 
         process = subprocess.Popen(args,
                                    cwd=self.get_current_source_path(), 
@@ -95,9 +104,13 @@ class PythonianBuilder(Builder):
             raise ValueError("Make failed: ")
 
 
-    def run_py_configure_and_make(self, options=[]):
+    def run_py_configure_and_make(self, options=[], host=False, makeopts=[]):
         """ Runs the python configure.py runner and the make process """
+        if os.path.exists(
+                os.path.join(self.get_current_source_path(),
+                             'Makefile')):
+            self.run_make(command='clean')
         
-        self.run_py_configure(options)
-        self.run_make()
-        self.run_make(install=True)
+        self.run_py_configure(options=options, host=host)
+        self.run_make(host=host, makeopts=makeopts)
+        self.run_make(install=True, host=host, makeopts=makeopts)

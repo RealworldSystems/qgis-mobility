@@ -17,6 +17,7 @@ class Recon(object):
         self._qt_path = os.path.join(self._necessitas_path, "Android", 
                                      "Qt", "482", "armeabi")
         self._qt_tools_path = os.path.join(self._qt_path, "bin")
+        self._qt_version_triplet = [4,8,2]
         self._android_level = 14
         self._ndk_platform = os.path.join(self._ndk_path, 'platforms', 'android-' + 
                                           str(self._android_level), 'arch-arm')
@@ -58,6 +59,9 @@ class Recon(object):
     
     def get_ndk_platform(self):
         return self._ndk_platform
+
+    def get_qt_version_triplet(self):
+        return self._qt_version_triplet
 
     necessitas_path = property(get_necessitas_path, None, None, "The necessitas path")
     ndk_path        = property(get_ndk_path,        None, None, "The Android NDK path")

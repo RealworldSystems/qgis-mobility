@@ -71,7 +71,6 @@ class Builder(object):
             print "Already Done"
     
     def purge(self):
-        
         if os.path.exists(self.get_build_path()):
             shutil.rmtree(self.get_build_path())
         if os.path.exists(self.get_source_path()):

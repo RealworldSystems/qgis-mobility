@@ -26,8 +26,13 @@ class SipBuilder(PythonianBuilder):
         shutil.copyfile(os.path.join(self.get_patch_path(), 'android-g++'),
                         os.path.join(self.get_current_source_path(), 'specs', 'android-g++'))
         
-        options=['INCDIR=' + self.get_include_path()]
+        options=['-e' + self.get_include_path(), 
+                 '-pandroid-g++', 'INCDIR=' + self.get_include_path()]
 
-        self.run_py_configure_and_make(options)
+        self.run_py_configure_and_make(options=options)
+        self.run_py_configure_and_make(host=True)
+        # Need to install SIP to hjost python
         
+
         self.mark_finished()
+

@@ -1,0 +1,196 @@
+diff -c /home/sjoerd/Projects/PipeRunner/QGisMobilityGenerator/patches/configure.old.py /home/sjoerd/Projects/PipeRunner/QGisMobilityGenerator/patches/configure.py
+*** a/configure.py	2013-01-22 14:40:03.000000000 +0100
+--- b/configure.py	2013-01-23 09:10:27.000000000 +0100
+***************
+*** 2021,2208 ****
+  
+      # The file names we will use to get the directory information.
+      app = "qtdirs"
+-     pro_file = app + ".pro"
+-     make_file = app + ".mk"
+-     make_target = ""
+-     cpp_file = app + ".cpp"
+      out_file = app + ".out"
+-     qmake_args = fix_qmake_args("-o " + make_file)
+- 
+-     if sys.platform == 'win32':
+-         if opts.debug:
+-             exe_file = os.path.join("debug", app + ".exe")
+-             make_target = " debug"
+-         else:
+-             exe_file = os.path.join("release", app + ".exe")
+-             make_target = " release"
+-     elif sys.platform == "darwin":
+-         exe_file = os.path.join(app + ".app", "Contents", "MacOS", app)
+-     else:
+-         exe_file = os.path.join(".", app)
+- 
+-     # Generate the qmake project file.
+-     f = open(pro_file, "w")
+- 
+-     if sipcfg.arch:
+-         f.write(arch_config())
+- 
+-     f.write(
+- """QT = core
+- # This is for certain broken Linux distros and is needed to make sure that
+- # QT_SHARED is properly defined.
+- CONFIG += link_prl
+- TARGET = %s
+- SOURCES = %s
+- """ % (app, cpp_file))
+- 
+-     f.close()
+- 
+-     # Generate the source code.
+-     f = open(cpp_file, "w")
+- 
+-     f.write(
+- """#include <QCoreApplication>
+- #include <QFile>
+- #include <QLibraryInfo>
+- #include <QTextStream>
+- 
+- // These seem to be missing from the Qt v5 beta.
+- #if !defined(QT_EDITION_DESKTOP)
+- #define QT_EDITION_DESKTOP      8
+- #endif
+- #if !defined(QT_EDITION_OPENSOURCE)
+- #define QT_EDITION_OPENSOURCE   8
+- #endif
+- 
+- int main(int argc, char **argv)
+- {
+-     QCoreApplication app(argc, argv);
+-     QFile outf("%s");
+- 
+-     if (!outf.open(QIODevice::WriteOnly|QIODevice::Truncate|QIODevice::Text))
+-         return 1;
+- 
+-     QTextStream out(&outf);
+- 
+-     out << QLibraryInfo::location(QLibraryInfo::PrefixPath) << '\\n';
+-     out << QLibraryInfo::location(QLibraryInfo::HeadersPath) << '\\n';
+-     out << QLibraryInfo::location(QLibraryInfo::LibrariesPath) << '\\n';
+-     out << QLibraryInfo::location(QLibraryInfo::BinariesPath) << '\\n';
+-     out << QLibraryInfo::location(QLibraryInfo::DataPath) << '\\n';
+-     out << QLibraryInfo::location(QLibraryInfo::PluginsPath) << '\\n';
+- 
+-     out << QT_VERSION << '\\n';
+-     out << QT_EDITION << '\\n';
+- 
+-     out << QLibraryInfo::licensee() << '\\n';
+- 
+- #if defined(QT_SHARED) || defined(QT_DLL)
+-     out << "shared\\n";
+- #else
+-     out << "\\n";
+- #endif
+- 
+-     // Determine which features should be disabled.
+- 
+- #if defined(QT_NO_ACCESSIBILITY)
+-     out << "PyQt_Accessibility\\n";
+- #endif
+- 
+- #if defined(QT_NO_SESSIONMANAGER)
+-     out << "PyQt_SessionManager\\n";
+- #endif
+- 
+- #if defined(QT_NO_STATUSTIP)
+-     out << "PyQt_StatusTip\\n";
+- #endif
+- 
+- #if defined(QT_NO_TOOLTIP)
+-     out << "PyQt_ToolTip\\n";
+- #endif
+- 
+- #if defined(QT_NO_WHATSTHIS)
+-     out << "PyQt_WhatsThis\\n";
+- #endif
+- 
+- #if defined(QT_NO_OPENSSL)
+-     out << "PyQt_OpenSSL\\n";
+- #endif
+- 
+- #if defined(QT_NO_SIZEGRIP)
+-     out << "PyQt_SizeGrip\\n";
+- #endif
+- 
+- #if defined(QT_NO_SYSTEMTRAYICON)
+-     out << "PyQt_SystemTrayIcon\\n";
+- #endif
+- 
+- #if defined(QT_NO_PRINTDIALOG)
+-     out << "PyQt_PrintDialog\\n";
+- #endif
+- 
+- #if defined(QT_NO_PRINTER)
+-     out << "PyQt_Printer\\n";
+- #endif
+- 
+- #if defined(QT_NO_PRINTPREVIEWDIALOG)
+-     out << "PyQt_PrintPreviewDialog\\n";
+- #endif
+- 
+- #if defined(QT_NO_PRINTPREVIEWWIDGET)
+-     out << "PyQt_PrintPreviewWidget\\n";
+- #endif
+- 
+- #if defined(QT_NO_RAWFONT)
+-     out << "PyQt_RawFont\\n";
+- #endif
+- 
+- #if !defined(QT3_SUPPORT) || QT_VERSION >= 0x040200
+-     out << "PyQt_NoPrintRangeBug\\n";
+- #endif
+- 
+- #if defined(QT_OPENGL_ES)
+-     out << "PyQt_NoOpenGLES\\n";
+- #endif
+- 
+-     if (sizeof (qreal) != sizeof (double))
+-         out << "PyQt_qreal_double\\n";
+- 
+-     return 0;
+- }
+- """ % out_file)
+- 
+-     f.close()
+- 
+-     # Create the makefile, first making sure it doesn't already exist.
+-     remove_file(make_file)
+-     run_command("%s %s %s" % (opts.qmake, qmake_args, pro_file))
+- 
+-     if not os.access(make_file, os.F_OK):
+-         sipconfig.error("%s failed to create a makefile. %s" % (opts.qmake, MSG_CHECK_QMAKE))
+- 
+-     # Try and work out the name of make.
+-     if sipcfg.platform.startswith("win32-msvc"):
+-         make = "nmake"
+-     elif sipcfg.platform == "win32-borland":
+-         make = "bmake"
+-     elif sipcfg.platform == "win32-g++":
+-         make = "mingw32-make"
+-     else:
+-         make = "make"
+- 
+-     # Create the executable, first making sure it doesn't exist.
+-     remove_file(exe_file)
+-     run_command("%s -f %s%s" % (make, make_file, make_target))
+- 
+-     if not os.access(exe_file, os.X_OK):
+-         sipconfig.error("Failed to determine the layout of your Qt installation. Try again using the --verbose flag to see more detail about the problem.")
+- 
+-     # Create the output file, first making sure it doesn't exist.
+-     remove_file(out_file)
+-     run_command(exe_file)
+- 
+-     if not os.access(out_file, os.F_OK):
+-         sipconfig.error("%s failed to create %s. Make sure your Qt installation is correct." % (exe_file, out_file))
+  
+      # Read the directories.
+      f = open(out_file, "r")
+--- 2021,2027 ----
+
+Diff finished.  Wed Jan 23 09:10:36 2013
