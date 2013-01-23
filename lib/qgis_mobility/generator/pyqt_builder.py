@@ -80,6 +80,11 @@ class PyQtBuilder(PythonianBuilder):
 
         self.push_current_source_path(os.path.join(self.get_source_path(), self.library_name()))
 
+        self.run_py_configure_and_make(options=['--confirm-license'], host=True)
+        self.pop_current_source_path()
+        shutil.rmtree(self.get_source_path(), self.library_name())
+        self.unpack(output)
+        self.push_current_source_path(os.path.join(self.get_source_path(), self.library_name()))
 
         qt_version, qt_edition = self.use_preprocessor_determination()
         fname = self.qtdirs_responder(qt_version, qt_edition)
@@ -88,7 +93,7 @@ class PyQtBuilder(PythonianBuilder):
         #                os.path.join(self.get_current_source_path(), 'configure.py'))
         self.patch('configure_py.patch', strip=1)
 
-        options=['--verbose', '--confirm-license', '--debug',
+        options=['--confirm-license',
                  '-pandroid-g++', 
                  '-eQtCore', '-eQtDeclarative', '-eQtScript', '-eQtNetwork', 
                  '-eQtMultimedia', '-eQtScriptTools', '-eQtSql', '-eQtSvg', '-eQtTest',

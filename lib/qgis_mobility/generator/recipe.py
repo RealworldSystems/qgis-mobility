@@ -35,7 +35,7 @@ class Recipe(object):
         GSLBuilder(recon).make()
         QWTBuilder(recon).make()
         SpatialindexBuilder(recon).make()
-        QGisBuilder(recon).make()
         PythonBuilder(recon).make()
         SipBuilder(recon).make()
         PyQtBuilder(recon).make()
+        QGisBuilder(recon).make()

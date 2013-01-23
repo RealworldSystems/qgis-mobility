@@ -17,7 +17,7 @@ from qgis_mobility.generator.gdal_builder import GDALBuilder
 from qgis_mobility.generator.gsl_builder import GSLBuilder
 from qgis_mobility.generator.qwt_builder import QWTBuilder
 from qgis_mobility.generator.spatialindex_builder import SpatialindexBuilder
-
+from qgis_mobility.generator.python_builder import PythonBuilder
 
 class QGisBuilder(Builder):
     """ Represents the build strategy for the QGis library """
@@ -121,6 +121,15 @@ class QGisBuilder(Builder):
         toolchain_file = os.path.join(self.get_current_source_path(), 'android.toolchain.cmake')
         shutil.copyfile(toolchain_src, toolchain_file)
         
+        python_builder = PythonBuilder(self.get_recon())
+        host_python_vars = python_builder.get_host_python_vars()
+        cmake_path = os.path.join(self.get_current_source_path(), 'cmake')
+        python_syspath = os.path.join(python_builder.get_host_python_prefix(),
+                                      'site-packages')
+        our_env["PYTHONPATH"] = python_syspath
+        our_env['PATH'] = os.pathsep.join([host_python_vars.bin, our_env['PATH']])
+        
+
         arguments = { 'ANDROID'              : 'true',
                       'ARM_TARGET'           : 'armeabi',
                       'CMAKE_INSTALL_PREFIX' : self.get_build_path(),
@@ -155,6 +164,8 @@ class QGisBuilder(Builder):
                       'SQLITE3_INCLUDE_DIR'  : SQLiteBuilder(recon).get_include_path(),
                       'SPATIALITE_LIBRARY'   : os.path.join(SpatialiteBuilder(recon).get_build_path(),
                                                             'lib', 'libspatialite.so'),
+                      'SPATIALITE_INCLUDE_DIR'   : os.path.join(SpatialiteBuilder(
+                          recon).get_include_path()),
                       'FLEX_EXECUTABLE'      : '/usr/bin/flex',
                       'BISON_EXECUTABLE'     : '/usr/bin/bison',
                       'SPATIALINDEX_INCLUDE_DIR' : SpatialindexBuilder(recon).get_include_path(),
@@ -164,7 +175,7 @@ class QGisBuilder(Builder):
                       'PEDANTIC' : 'OFF',
                       'WITH_APIDOC' : 'OFF',
                       'WITH_DESKTOP' : 'OFF',
-                      'WITH_BINDINGS' : 'OFF',
+                      'WITH_BINDINGS' : 'ON',
                       'WITH_GLOBE' : 'OFF',
                       'WITH_GRASS' : 'OFF',
                       'WITH_INTERNAL_QWTPOLAR' : 'ON',
@@ -173,7 +184,55 @@ class QGisBuilder(Builder):
                       'WITH_SPATIALITE' : 'ON',
                       'WITH_TXT2TAGS_PDF' : 'OFF',
                       'WITH_QTMOBILITY' : 'ON',
-                      'ENABLE_TESTS' : 'OFF' }
+                      'ENABLE_TESTS' : 'OFF',
+                      'BINDINGS_GLOBAL_INSTALL' : 'OFF',
+                      'PYTHON_EXECUTABLE' : host_python_vars.python,
+                      '_find_sip_py' : os.path.join(cmake_path, 'FindSIP.py'),
+                      '_find_lib_python_py' : os.path.join(cmake_path, 'FindLibPython.py'),
+                      '_find_pyqt_py' : os.path.join(cmake_path, 'FindPyQt.py'),
+                      '_python_compile_py' : os.path.join(cmake_path, 'PythonCompile.py'),
+                      'PYTHON_LIBRARY' : os.path.join(python_builder.get_output_library_path(),
+                                                      'libpython2.7.so'),
+                      'PYUIC4_PROGRAM' : os.path.join(host_python_vars.bin, 'pyuic4'),
+                      'PYRCC4_PROGRAM' : os.path.join(host_python_vars.bin, 'pyrcc4')}
+
+        # Need to prepend CMAKE_C(XX)_FLAGS to the already set flags
+        self.sed_ie('1iinclude_directories("%s")' % 
+                   python_builder.get_include_path(), 'CMakeLists.txt')
+        self.sed_ie('s/ADD_SUBDIRECTORY(gui)//', 
+                    os.path.join(self.get_current_source_path(), 
+                                 'src', 'CMakeLists.txt'))
+        self.sed_ie('s/ADD_SUBDIRECTORY(providers)//', 
+                    os.path.join(self.get_current_source_path(), 
+                                 'src', 'CMakeLists.txt'))
+        self.sed_ie('s|../gui||', 
+                    os.path.join(self.get_current_source_path(), 
+                                 'src', 'python', 'CMakeLists.txt'))
+        self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.gui.*$//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'CMakeLists.txt'))
+        self.sed_ie('s/void adjustBoxSize.*$//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'core', 'qgscomposerscalebar.sip'))
+        self.sed_ie('s/void segmentPositions.*$//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'core', 'qgscomposerscalebar.sip'))
+        self.sed_ie('s/%Include qgsapplication.sip//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'core', 'core.sip'))
+        #self.sed_ie('s|%Import QtGui/QtGuimod.sip||',
+        #            os.path.join(self.get_current_source_path(), 
+        #                         'python', 'core', 'core.sip'))
+
+        os.remove(os.path.join(self.get_current_source_path(), 
+                                 'python', 'core', 'qgsapplication.sip'))
+
+
+
+        #self.sed_ie('s/LINK_DIRECTORIES\(${CMAKE_BINARY_DIR}/src/core "\n', 'CMakeLists.txt')
+        
+        #os.rename(os.path.join(self.get_current_source_path(), 'src', 'gui'),
+        #          os.path.join(self.get_current_source_path(), 'src', 'nogui'))
         args = ['cmake']        
         for arg in arguments:
             args.extend(['-D' + arg + '=' + arguments[arg]])
@@ -183,7 +242,8 @@ class QGisBuilder(Builder):
         if process.returncode != 0:
             raise ValueError("Failed Process:", args[0])
         cpuflag = '-j' + str(multiprocessing.cpu_count())
-        process = subprocess.Popen(['make', 'VERBOSE=1', cpuflag, 'install'],
+        process = subprocess.Popen(['make',
+                                    'VERBOSE=1', cpuflag, 'install'],
                                    cwd=self.get_current_source_path(), env=our_env)
         process.communicate(None)
         if process.returncode != 0:
