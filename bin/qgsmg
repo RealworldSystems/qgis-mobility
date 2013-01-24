@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+
+type getopts >/dev/null 2>&1 || { 
+     echo >&2 "-F A T A L--------------------------------------------------"
+     echo >&2 "While booting, getopts has not been found, shell too old!"
+     echo >&2 "Please install your distribution's package containing a"
+     echo >&2 "recent Bourne Again Shell"
+     exit 1
+}
+
+type readlink >/dev/null 2>&1 || {
+     echo >&2 "-F A T A L--------------------------------------------------"
+     echo >&2 "While booting, readlink has not been found!"
+     echo >&2 "Please install your distribution's package containing"
+     echo >&2 "readlink"
+     exit 1
+}
+
+type dirname >/dev/null 2>&1 || {
+     echo >&2 "-F A T A L--------------------------------------------------"
+     echo >&2 "While booting, dirname has not been found!"
+     echo >&2 "Please install your distribution's package containing"
+     echo >&2 "dirname"
+     exit 1
+}
+
+# The options are partially parsed by getopt and further parsed by the underlying
+# Host Python (if it exists).
+
+# We need to know where to install the host python if it doesn't exist, and if it exist,
+# where to execute it. The default path is:
+# $HOME/.qgis_mobility_generator_cache/hostpython/bin/python
+
+scriptfile="$(readlink -f $0)"
+scriptpath="$(dirname $scriptfile)"
+
+getopts ":c:" opt
+
+generator_cache=$HOME/.qgis_mobility_generator_cache
+
+if [ $opt = ':' -a "$OPTARG" = 'c' ]; then
+    echo >&2 "-F A T A L--------------------------------------------------"
+    echo >&2 "Only boot argument -c needs <PATH> parameter"
+    echo >&2 "This parameter dictates where the HOST PYTHON will be"
+    echo >&2 "installed"
+    exit 1
+elif [ $opt = 'c' ] ; then
+    generator_cache=$OPTARG
+    shift
+    shift
+fi
+
+hostpython="$generator_cache/hostpython"
+
+function safe_regen
+{
+    if [ ! -d "$hostpython" ]; then
+	echo "No host python setup, wiring up basic installation routine"
+	mkdir -p $hostpython
+	return=$?
+	if [ $return != '0' ]; then exit $? ; fi
+	pushd $hostpython
+	wget -c 'http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tgz'
+	tar xzf 'Python-2.7.2.tgz'
+	pushd 'Python-2.7.2'
+	./configure "--prefix=$hostpython"
+	if [ $return != '0' ]; then exit $? ; fi
+	make
+	if [ $return != '0' ]; then exit $? ; fi
+	make install
+	if [ $return != '0' ]; then exit $? ; fi
+	popd
+	popd
+    fi
+}
+
+if [ ! -d "$hostpython/bin" ]; then
+    echo "Host python binary path not found"
+    rm -rf $hostpython
+fi
+
+if [ ! -f "$hostpython/bin/python2.7" ]; then
+    echo "Host python binary executable not found"
+    rm -rf $hostpython
+fi
+
+safe_regen
+
+# Now, hostpython should exist. If it doesn't exist, we are unlucky. 
+# Continuing running in Python.
+
+CACHE_PATH="$generator_cache" $hostpython/bin/python2.7 $scriptpath/../script/qgsmg.py $@
