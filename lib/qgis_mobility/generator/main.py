@@ -1,8 +1,10 @@
 import qgis_mobility.generator
 from qgis_mobility.generator.recipe import Recipe
+from shutil import rmtree
 import os
 import argparse
 import textwrap
+import inspect
 
 def _current_necessitas(): 
     return qgis_mobility.generator.current_necessitas()
@@ -65,6 +67,13 @@ class Recon(object):
     def get_qt_version_triplet(self):
         return self._qt_version_triplet
 
+    def get_script_path(self):
+        current_path = os.path.realpath(os.path.dirname(
+            inspect.getfile(inspect.currentframe())))
+        
+        return os.path.join(current_path, '..', '..', '..', 'script')
+
+
     necessitas_path = property(get_necessitas_path, None, None, "The necessitas path")
     ndk_path        = property(get_ndk_path,        None, None, "The Android NDK path")
     sdk_path        = property(get_sdk_path,        None, None, "The Android SDK path")
@@ -88,8 +97,23 @@ class Recon(object):
             if not os.path.exists(path):
                 raise EnvironmentError("Could not determine path: " + path)
 
-def run(cache_path):
 
+def __purge_cache_path(recon):
+    """ Purges the source path but keeps build targets """
+    rmtree(os.path.join(recon.get_cache_path(), 'source'))
+
+def __distclean(recon):
+    """ Removes everything """
+    
+    # This removes the whole tree of build fragments. To do this,
+    # it needs to destroy hostpython (which is where this file
+    # is running). Therefore, a shell file is executed replacing
+    # this process
+    script_path = recon.get_script_path()
+    distclean = os.path.join(script_path, "distclean.sh")
+    os.execlp(distclean, distclean)
+
+def run(cache_path):
     describe = textwrap.dedent('''\
     script arguments:
       -c <PATH>  Instructs the bash script to initiate
@@ -103,9 +127,13 @@ def run(cache_path):
     parser.add_argument('action', action='store', nargs=1,
                         help='Initiates a make routine')
     args = parser.parse_args()
+    recon = Recon(_current_necessitas(), cache_path)
     
     if 'make' in args.action:
-        recon = Recon(_current_necessitas(), cache_path)
         Recipe(recon).make()
+    elif 'purgecache' in args.action:
+        __purge_cache_path(recon)
+    elif 'distclean' in args.action:
+        __distclean(recon)
     else:
         raise ValueError('action provided is not used')
