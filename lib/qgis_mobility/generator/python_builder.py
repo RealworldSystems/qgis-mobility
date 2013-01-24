@@ -39,7 +39,7 @@ class PythonBuilder(Builder):
         qgis path
         """
         python_packed_library = self.library_name() + '.tgz'
-        excursion_path = os.path.join(self.get_source_path(), '..', 'python_download')
+        excursion_path = os.path.join(self.get_recon().get_cache_path(), 'hostpython')
         download_path = os.path.join(excursion_path, python_packed_library)
         if not os.path.exists(download_path):
             if not os.path.exists(excursion_path): os.makedirs(excursion_path)
@@ -129,14 +129,14 @@ class PythonBuilder(Builder):
             shutil.rmtree(host_python_prefix)
         
         
-        host_build = [['bash', 'configure', '--prefix=' + host_python_prefix],
-                      ['make', '-j' + str(multiprocessing.cpu_count())],
-                      ['make', 'install']]
-        for args in host_build:
-            process = subprocess.Popen(args, cwd=self.get_current_source_path())
-            process.communicate(None)
-            if process.returncode != 0:
-                raise ValueError("Could not build host python")
+        #host_build = [['bash', 'configure', '--prefix=' + host_python_prefix],
+        #              ['make', '-j' + str(multiprocessing.cpu_count())],
+        #              ['make', 'install']]
+        #for args in host_build:
+        #    process = subprocess.Popen(args, cwd=self.get_current_source_path())
+        #    process.communicate(None)
+        #    if process.returncode != 0:
+        #        raise ValueError("Could not build host python")
 
         os.symlink(os.path.join(host_python_prefix, 'bin', 'python'),
                    os.path.join(self.get_current_source_path(), '..', 'pythonhost'))

@@ -2,13 +2,14 @@ import qgis_mobility.generator
 from qgis_mobility.generator.recipe import Recipe
 import os
 import argparse
+import textwrap
 
 def _current_necessitas(): 
     return qgis_mobility.generator.current_necessitas()
 
 class Recon(object):
     """ Sets the paths for the different components of necessitas we need """
-    def __init__(self, necessitas_path):
+    def __init__(self, necessitas_path, cache_path):
         """ Initializes the Recon object and attempts to set the necessary tooling """
         self._home_path = os.environ['HOME']
         self._necessitas_path = necessitas_path
@@ -21,6 +22,7 @@ class Recon(object):
         self._android_level = 14
         self._ndk_platform = os.path.join(self._ndk_path, 'platforms', 'android-' + 
                                           str(self._android_level), 'arch-arm')
+        self._cache_path = cache_path
         self.verify()
     
     def get_necessitas_path(self): 
@@ -52,7 +54,7 @@ class Recon(object):
         return self._android_level
     
     def get_cache_path(self):
-        return os.path.join(self.get_home_path(), ".qgis_mobility_generator_cache")
+        return self._cache_path
 
     def get_toolchain_path(self):
         return os.path.join(self.get_cache_path(), 'toolchain')
@@ -86,14 +88,24 @@ class Recon(object):
             if not os.path.exists(path):
                 raise EnvironmentError("Could not determine path: " + path)
 
-def run():
-    parser = argparse.ArgumentParser()
+def run(cache_path):
+
+    describe = textwrap.dedent('''\
+    script arguments:
+      -c <PATH>  Instructs the bash script to initiate
+                 into the given cache path
+    ''')
+    usage = "qgsmg [-c <PATH>] [-h] action"
+    parser = argparse.ArgumentParser(
+        usage=usage,
+        description=describe, prog='qgsmg',
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('action', action='store', nargs=1,
                         help='Initiates a make routine')
     args = parser.parse_args()
     
     if 'make' in args.action:
-        recon = Recon(_current_necessitas())
+        recon = Recon(_current_necessitas(), cache_path)
         Recipe(recon).make()
     else:
         raise ValueError('action provided is not used')
