@@ -82,7 +82,7 @@ class PyQtBuilder(PythonianBuilder):
 
         self.run_py_configure_and_make(options=['--confirm-license'], host=True)
         self.pop_current_source_path()
-        shutil.rmtree(self.get_source_path(), self.library_name())
+        shutil.rmtree(os.path.join(self.get_source_path(), self.library_name()))
         self.unpack(output)
         self.push_current_source_path(os.path.join(self.get_source_path(), self.library_name()))
 
