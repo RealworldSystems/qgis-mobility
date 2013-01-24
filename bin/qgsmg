@@ -1,28 +1,46 @@
 #!/usr/bin/env bash
 
-type getopts >/dev/null 2>&1 || { 
-     echo >&2 "-F A T A L--------------------------------------------------"
-     echo >&2 "While booting, getopts has not been found, shell too old!"
-     echo >&2 "Please install your distribution's package containing a"
-     echo >&2 "recent Bourne Again Shell"
-     exit 1
+# It's important to make sure that some prerequisites exist. These prerequisites
+# especially include build tooling, but also some needs for Bash itself. If
+# these prerequisites are not available, software construction can not continue
+function scan_for {
+    local name="$1"
+    local likely_package="$2"
+    if [ "x$likely_package" = "x" ] ; then
+	likely_package="$name"
+    fi
+    
+
+    type "$name" >/dev/null 2>&1 || { 
+	echo " "
+	echo >&2 "- F A T A L ------------------------------------------------"
+	echo >&2 "While booting, $name has not been found!"
+	echo >&2 "Please install your distribution's package containing a"
+	echo >&2 "recent $likely_package"
+	exit 1
+    }
+    echo -n "($name) "
 }
 
-type readlink >/dev/null 2>&1 || {
-     echo >&2 "-F A T A L--------------------------------------------------"
-     echo >&2 "While booting, readlink has not been found!"
-     echo >&2 "Please install your distribution's package containing"
-     echo >&2 "readlink"
-     exit 1
-}
+# Do the actual scanning for a number of necessary prerequisites. This list should
+# reflect the actual necessary elements.
 
-type dirname >/dev/null 2>&1 || {
-     echo >&2 "-F A T A L--------------------------------------------------"
-     echo >&2 "While booting, dirname has not been found!"
-     echo >&2 "Please install your distribution's package containing"
-     echo >&2 "dirname"
-     exit 1
-}
+echo -n "Checking: "
+
+scan_for make "Build Essential"
+scan_for automake "Autotools"
+scan_for autoconf "Autotools"
+scan_for flex
+scan_for bison
+scan_for gcc "GNU Compiler Collection"
+scan_for g++ "GNU C++"
+scan_for getopts "Bourne Again Shell"
+scan_for readlink
+scan_for dirname
+
+# Clean two newlines
+echo
+echo
 
 # The options are partially parsed by getopt and further parsed by the underlying
 # Host Python (if it exists).
