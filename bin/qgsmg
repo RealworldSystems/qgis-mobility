@@ -19,7 +19,7 @@ function scan_for {
 	echo >&2 "recent $likely_package"
 	exit 1
     }
-    echo -n "($name) "
+    echo -n "$name [OK] "
 }
 
 # Do the actual scanning for a number of necessary prerequisites. This list should
@@ -30,6 +30,7 @@ echo -n "Checking: "
 scan_for make "Build Essential"
 scan_for automake "Autotools"
 scan_for autoconf "Autotools"
+scan_for autoreconf "Autotools"
 scan_for flex
 scan_for bison
 scan_for gcc "GNU Compiler Collection"
