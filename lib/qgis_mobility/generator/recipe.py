@@ -15,6 +15,7 @@ from qgis_mobility.generator.python_builder import PythonBuilder
 from qgis_mobility.generator.qgis_builder import QGisBuilder
 from qgis_mobility.generator.sip_builder import SipBuilder
 from qgis_mobility.generator.pyqt_builder import PyQtBuilder
+from qgis_mobility.generator.runtime_builder import RuntimeBuilder
 
 class Recipe(object):
     def __init__(self, recon):
@@ -39,3 +40,4 @@ class Recipe(object):
         SipBuilder(recon).make()
         PyQtBuilder(recon).make()
         QGisBuilder(recon).make()
+        RuntimeBuilder(recon).make()

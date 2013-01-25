@@ -106,6 +106,10 @@ class Builder(object):
     cache_path = property(get_cache_path, None, None, "The QGIS Mobility cache")
     
 
+    def get_runtime_path(self):
+        """ Returns the path pointing to the runtime sources """
+        return os.path.join(self._current_path, '..', '..', '..', 'runtime')
+
     def get_core_patch_path(self):
         return os.path.join(self._current_path, '..', '..', '..', 'patches')
 
@@ -274,6 +278,13 @@ class Builder(object):
         if not process.returncode == 0:
             raise ValueError("Failed Process: " + args[0])
         print "Autogeneration done"
+
+    def run_autoreconf(self):
+        process = Popen(['autoreconf'], cwd=self.get_current_source_path())
+        process.communicate(None)
+        if not process.returncode == 0:
+            raise ValueError("Failed Process: " + args[0])
+        print "Auto(re)configuration done"
         
 
     def run_autotools_and_make(self, where=None, harness=True, runmakeinstall=True):
