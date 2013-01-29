@@ -132,30 +132,9 @@ class PythonBuilder(Builder):
 
         self.unpack(output)
         os.rename(os.path.join(self.get_current_source_path(), self.library_name()),
-                  host_source_path)
-
-        self.unpack(output)
-        os.rename(os.path.join(self.get_current_source_path(), self.library_name()),
                   android_source_path)
 
-        self.push_current_source_path(os.path.join(self.get_current_source_path(), 'host'))
-        # Do the host dance
-        host_python_prefix = self.get_host_python_prefix()
-        host_python_vars = self.get_host_python_vars()
-
-        if os.path.exists(host_python_prefix):
-            shutil.rmtree(host_python_prefix)
         
-        
-        #host_build = [['bash', 'configure', '--prefix=' + host_python_prefix],
-        #              ['make', '-j' + str(multiprocessing.cpu_count())],
-        #              ['make', 'install']]
-        #for args in host_build:
-        #    process = subprocess.Popen(args, cwd=self.get_current_source_path())
-        #    process.communicate(None)
-        #    if process.returncode != 0:
-        #        raise ValueError("Could not build host python")
-
         os.symlink(os.path.join(host_python_prefix, 'bin', 'python'),
                    os.path.join(self.get_current_source_path(), '..', 'pythonhost'))
 
