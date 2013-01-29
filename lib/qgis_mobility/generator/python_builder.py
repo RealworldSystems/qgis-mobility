@@ -134,7 +134,9 @@ class PythonBuilder(Builder):
         os.rename(os.path.join(self.get_current_source_path(), self.library_name()),
                   android_source_path)
 
-        
+        host_python_prefix = self.get_host_python_prefix()
+        host_python_vars = self.get_host_python_vars()
+
         os.symlink(os.path.join(host_python_prefix, 'bin', 'python'),
                    os.path.join(self.get_current_source_path(), '..', 'pythonhost'))
 
