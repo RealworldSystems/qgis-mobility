@@ -137,10 +137,10 @@ class PythonBuilder(Builder):
         host_python_prefix = self.get_host_python_prefix()
         host_python_vars = self.get_host_python_vars()
 
-        os.symlink(os.path.join(host_python_prefix, 'bin', 'python'),
-                   os.path.join(self.get_current_source_path(), '..', 'pythonhost'))
+        if not os.path.exists(os.path.join(self.get_current_source_path(), 'pythonhost')):
+            os.symlink(os.path.join(host_python_prefix, 'bin', 'python'),
+                       os.path.join(self.get_current_source_path(), 'pythonhost'))
 
-        self.pop_current_source_path()
         self.push_current_source_path(os.path.join(self.get_current_source_path(), 'android'))
         path = self.get_path()
         our_env = dict(os.environ).copy()
