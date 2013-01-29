@@ -19,6 +19,6 @@
 #
 
 
-echo "Removing CACHEPATH: $CACHEPATH"
+echo "Removing CACHEPATH: $CACHE_PATH"
 rm -rf "$CACHE_PATH"
 exit 0
