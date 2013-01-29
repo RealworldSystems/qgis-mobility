@@ -100,15 +100,18 @@ class Builder(object):
         return os.path.realpath(os.path.dirname(
             inspect.getfile(inspect.currentframe())))
 
+    def get_build_finished_file(self):
+        return os.path.join(
+            self.cache_path, '.fini' + self._library_name)
+    
     def get_build_finished(self):
-        return os.path.exists(os.path.join(
-            self.cache_path, '.fini' + self._library_name))
+        return os.path.exists(self.get_build_finished_file())
     
     build_finished = property(get_build_finished, None, None, 
                               "True if the build is finished")
     
     def mark_finished(self):
-        with open(os.path.join(self.cache_path, '.fini' + self._library_name), 'w'):
+        with open(self.get_build_finished_file(), 'w'):
             pass
 
     def get_home_path(self):

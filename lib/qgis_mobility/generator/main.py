@@ -23,6 +23,7 @@ import os
 import argparse
 import textwrap
 import inspect
+import re
 
 def _current_necessitas(): 
     return qgis_mobility.generator.current_necessitas()
@@ -130,28 +131,59 @@ def __distclean(recon):
     script_path = recon.get_script_path()
     distclean = os.path.join(script_path, "distclean.sh")
     os.execlp(distclean, distclean)
+    
+
+def __workout_targets(receiver, prefix="", start={}):
+    for item in dir(receiver):
+        if len(item) < 1 or item[0:1] != '_':
+            attr = getattr(receiver, item)
+            if type(attr).__name__ == 'instancemethod':
+                start[prefix + item] = [receiver, attr]
+            elif isinstance(attr, object):
+                __workout_targets(attr, prefix + item  + ':', start)
+    
+    return start
+
+def __parsecommand(expression, recipe):
+    """
+    Parses the command range as given in expression
+    """
+    
+    targets = __workout_targets(recipe)
+    if 'purgecache' == expression:
+        __purge_cache_path(recon)
+    elif 'distclean' == expression:
+        __distclean(recon)
+    else:
+        receiver, attr = targets[expression]
+        attr()
+        
 
 def run(cache_path):
+
+    recon = Recon(_current_necessitas(), cache_path)
+    recipe = Recipe(recon)
+
+    epilog=textwrap.dedent('''\
+    The action should be any of the following
+    ''')
+    epilog += "  - purgecache\n  - distclean\n  - "
+    epilog += "\n  - ".join(sorted(__workout_targets(recipe).keys()))
+    
     describe = textwrap.dedent('''\
     script arguments:
-      -c <PATH>  Instructs the bash script to initiate
-                 into the given cache path
+      -c <PATH>   Instructs the bash script to initiate
+                  into the given cache path
     ''')
     usage = "qgsmg [-c <PATH>] [-h] action"
     parser = argparse.ArgumentParser(
         usage=usage,
+        epilog=epilog,
         description=describe, prog='qgsmg',
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('action', action='store', nargs=1,
                         help='Initiates a make routine')
     args = parser.parse_args()
-    recon = Recon(_current_necessitas(), cache_path)
     
-    if 'make' in args.action:
-        Recipe(recon).make()
-    elif 'purgecache' in args.action:
-        __purge_cache_path(recon)
-    elif 'distclean' in args.action:
-        __distclean(recon)
-    else:
-        raise ValueError('action provided is not used')
+    __parsecommand(args.action[0], recipe)
+    

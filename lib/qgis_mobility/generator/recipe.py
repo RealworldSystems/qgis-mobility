@@ -35,27 +35,139 @@ from qgis_mobility.generator.sip_builder import SipBuilder
 from qgis_mobility.generator.pyqt_builder import PyQtBuilder
 from qgis_mobility.generator.runtime_builder import RuntimeBuilder
 
-class Recipe(object):
-    def __init__(self, recon):
-        self._recon = recon
+import sys
+import os
 
-    def make(self):
-        recon = self._recon
-        StandaloneToolchain(recon).make()
-        BZip2Builder(recon).make()
-        LibiconvBuilder(recon).make()
-        FreeXLBuilder(recon).make()
-        SQLiteBuilder(recon).make()
-        GeosBuilder(recon).make()
-        Proj4Builder(recon).make()
-        SpatialiteBuilder(recon).make()
-        ExpatBuilder(recon).make()
-        GDALBuilder(recon).make()
-        GSLBuilder(recon).make()
-        QWTBuilder(recon).make()
-        SpatialindexBuilder(recon).make()
-        PythonBuilder(recon).make()
-        SipBuilder(recon).make()
-        PyQtBuilder(recon).make()
-        QGisBuilder(recon).make()
-        RuntimeBuilder(recon).make()
+from collections import namedtuple
+
+__dependency_class_chain = [
+        StandaloneToolchain,
+        BZip2Builder,
+        LibiconvBuilder,
+        FreeXLBuilder,
+        SQLiteBuilder,
+        GeosBuilder,
+        Proj4Builder,
+        SpatialiteBuilder,
+        ExpatBuilder,
+        GDALBuilder,
+        GSLBuilder,
+        QWTBuilder,
+        SpatialindexBuilder,
+        PythonBuilder,
+        SipBuilder,
+        PyQtBuilder,
+        QGisBuilder,
+        RuntimeBuilder,
+] 
+
+
+__resolved_names = None
+
+
+def __resolve_names():
+    """
+    This function resolves the names from the dependency class chain
+    defined here
+    """
+    global __resolved_names
+    
+    if __resolved_names == None:
+        name_dict = {}
+        for dependency_class in __dependency_class_chain:
+            mod = sys.modules[dependency_class.__module__]
+            for obj_name in mod.__dict__.keys():
+                if mod.__dict__[obj_name] == dependency_class:
+                    lowered = obj_name.lower()
+                    if len(lowered) > 6 and lowered[-7:] == "builder":
+                        lowered = lowered[:-7]
+                    name_dict[lowered] = dependency_class
+        __resolved_names = name_dict
+
+# Call the name resolution
+__resolve_names()
+
+def resolve_name(name):
+    return __resolved_names[name]
+
+def all_values():
+    return __resolved_names.values()
+
+def all_names():
+    return __resolved_names.keys()
+
+def get_dependency_class_chain(builder):
+    """
+    Resolves the dependency class chain upto now
+    """
+    global __dependency_class_chain
+    
+    elems = []
+    for dependency in __dependency_class_chain:
+        elems.extend([dependency])
+        if builder.__class__ == dependency:
+            return elems
+
+    return elems
+
+class Recipe(object):
+    class _Target(object):
+        def __init__(self, recipe, target, recon):
+            """
+            Initializes the target with a builder instance
+            """
+            self._recipe = recipe
+            self._recon = recon
+            self._builder = target(recon)
+
+        def build(self):
+            """
+            Builds the target
+            """
+            
+            for dependency_class in get_dependency_class_chain(self._builder):
+                dependency_class(self._recon).make()
+            
+        
+        def rebuild(self):
+            """
+            Rebuilds the target
+            """
+            self.clean()
+            self.build()
+
+        def clean(self):
+            """
+            Cleans up the mess
+            """
+            if self._builder.get_build_finished():
+                print '='*80
+                print "Cleaning", self._builder.human_name() 
+                print '='*80
+                os.remove(self._builder.get_build_finished_file()) 
+            else:
+                print '='*80
+                print "Already cleaned", self._builder.human_name() 
+                print '='*80
+    
+    class _All(object):
+        def __init__(self, targets):
+            self._targets = targets
+        
+        def clean(self):
+            for target in self._targets:
+                target.clean()
+            
+        
+        def build(self):
+            self._targets.runtime.build()
+        
+
+    def __init__(self, recon):
+        names = all_names()
+        targets = namedtuple('_Targets', names)
+        self.recipe = targets(*map (lambda v: Recipe._Target(self, v, recon), 
+                                    all_values()))
+        self.all = Recipe._All(self.recipe)
+
+
