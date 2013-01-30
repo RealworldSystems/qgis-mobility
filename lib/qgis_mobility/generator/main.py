@@ -144,7 +144,7 @@ def __workout_targets(receiver, prefix="", start={}):
     
     return start
 
-def __parsecommand(expression, recipe):
+def __parsecommand(expression, parameters, recipe):
     """
     Parses the command range as given in expression
     """
@@ -156,11 +156,15 @@ def __parsecommand(expression, recipe):
         __distclean(recon)
     else:
         receiver, attr = targets[expression]
-        attr()
+        if (len(inspect.getargspec(attr).args) - 1) != len(parameters):
+            raise ValueError("Count of parameters is off")
+        attr(*parameters)
         
 
 def run(cache_path):
-
+    """
+    This is the starting point for dispatching different tasks.
+    """
     recon = Recon(_current_necessitas(), cache_path)
     recipe = Recipe(recon)
 
@@ -183,7 +187,9 @@ def run(cache_path):
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('action', action='store', nargs=1,
                         help='Initiates a make routine')
+    parser.add_argument('parameters', action='store', nargs='*',
+                        help='Parameters for the given action')
     args = parser.parse_args()
     
-    __parsecommand(args.action[0], recipe)
+    __parsecommand(args.action[0], args.parameters, recipe)
     

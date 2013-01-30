@@ -34,6 +34,7 @@ from qgis_mobility.generator.qgis_builder import QGisBuilder
 from qgis_mobility.generator.sip_builder import SipBuilder
 from qgis_mobility.generator.pyqt_builder import PyQtBuilder
 from qgis_mobility.generator.runtime_builder import RuntimeBuilder
+from qgis_mobility.generator.creator import Creator
 
 import sys
 import os
@@ -86,9 +87,6 @@ def __resolve_names():
 
 # Call the name resolution
 __resolve_names()
-
-def resolve_name(name):
-    return __resolved_names[name]
 
 def all_values():
     return __resolved_names.values()
@@ -161,7 +159,6 @@ class Recipe(object):
         
         def build(self):
             self._targets.runtime.build()
-        
 
     def __init__(self, recon):
         names = all_names()
@@ -169,5 +166,4 @@ class Recipe(object):
         self.recipe = targets(*map (lambda v: Recipe._Target(self, v, recon), 
                                     all_values()))
         self.all = Recipe._All(self.recipe)
-
-
+        self.creator = Creator(recon)
