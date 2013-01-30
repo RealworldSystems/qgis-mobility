@@ -300,32 +300,8 @@ class Builder(object):
             raise ValueError("Failed Process: " + args[0])
         print "Autogeneration done"
 
-    def run_aclocal(self):
-        process = Popen(['aclocal'], cwd=self.get_current_source_path())
-        process.communicate(None)
-        if not process.returncode == 0:
-            raise ValueError("Failed Process: " + args[0])
-        print "Autoconf Local done"
-
-
-    def run_automake_add_missing(self):
-        process = Popen(['automake', '--add-missing'], cwd=self.get_current_source_path())
-        process.communicate(None)
-        if not process.returncode == 0:
-            raise ValueError("Failed Process: " + args[0])
-        print "Automake --add-missing done"
-
-
-    def run_libtoolize(self):
-        process = Popen(['libtoolize'], cwd=self.get_current_source_path())
-        process.communicate(None)
-        if not process.returncode == 0:
-            raise ValueError("Failed Process: " + args[0])
-        print "Libtoolize done"
-        
-
     def run_autoreconf(self):
-        process = Popen(['autoreconf'], cwd=self.get_current_source_path())
+        process = Popen(['autoreconf', '-i'], cwd=self.get_current_source_path())
         process.communicate(None)
         if not process.returncode == 0:
             raise ValueError("Failed Process: " + args[0])
