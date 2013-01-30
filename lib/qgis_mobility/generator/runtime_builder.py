@@ -55,6 +55,7 @@ class RuntimeBuilder(Builder):
     def do_build(self):
         """ Runs the actual build process """
         distutils.dir_util.copy_tree(self.get_runtime_path(), self.get_source_path())
+        self.run_aclocal()
         self.run_libtoolize()
         self.run_automake_add_missing()
         self.run_autoreconf()
