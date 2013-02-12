@@ -37,6 +37,9 @@ class GSLBuilder(Builder):
         self.unpack(output)
         self.push_current_source_path(os.path.join(self.get_source_path(), self.library_name()))
         self.fix_config_sub_and_guess()
+        self.sed_ir('s/(\-version\-info \$\(GSL_LT_VERSION\))/\-avoid\-version/g', 'Makefile.am')
+        self.sed_ie('$alibgsl_la_LDFLAGS = -avoid-version', 'Makefile.am')
+        self.run_autoreconf()
         self.run_autotools_and_make()        
         distutils.dir_util.copy_tree(os.path.join(self.get_build_path(), 'include'),
                                      os.path.join(self.get_include_path()))

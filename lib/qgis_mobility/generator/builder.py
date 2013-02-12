@@ -301,7 +301,7 @@ class Builder(object):
         print "Autogeneration done"
 
     def run_autoreconf(self):
-        process = Popen(['autoreconf', '-i'], cwd=self.get_current_source_path())
+        process = Popen(['autoreconf', '-i', '-f'], cwd=self.get_current_source_path())
         process.communicate(None)
         if not process.returncode == 0:
             raise ValueError("Failed Process: " + args[0])

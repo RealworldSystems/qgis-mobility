@@ -61,11 +61,16 @@ class SpatialiteBuilder(Builder):
                            self.library_name() + '.tar.gz')
         self.unpack(output)
         self.push_current_source_path(os.path.join(self.get_source_path(), 'lib' + self.library_name()))
+        working_dir = os.path.join(self.get_source_path(), 'lib' + self.library_name())
+        if not os.path.exists(working_dir + '/m4'): 
+              os.makedirs(working_dir + '/m4')
         self.fix_config_sub_and_guess()
+        self.sed_ir('s/(\-version\-info 4\:0\:2)/\-avoid\-version/g', 'src/Makefile.am')
+        self.run_autoreconf()
         self.sed_i("s/@MINGW_FALSE@am__append_1 = -lpthread -ldl/@MINGW_FALSE@am_append_1 = -ldl/", 
                    'src/Makefile.in')
         self.sed_ir('s/(hardcode_into_libs)=.*$/\\1=no/', 'configure')
-        self.run_autotools_and_make()        
+        self.run_autotools_and_make()
         distutils.dir_util.copy_tree(os.path.join(self.get_build_path(), 'include'),
                                      os.path.join(self.get_include_path()))
         
