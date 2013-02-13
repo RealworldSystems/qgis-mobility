@@ -42,6 +42,7 @@ class SpatialindexBuilder(Builder):
 
         flags['CXXFLAGS'] = MY_STD_CXXFLAGS="-L" + gnu_libstdcxx + ' ' + flags['CXXFLAGS']
         flags['CXXFLAGS'] += ' -lsupc++ -llog -lz -lm -ldl -lc -lgcc -lgnustl_static -lz -lm -ldl -lm'
+        flags['LDFLAGS'] += ' -lstdc++ -lm -lm'
         return flags
 
 
