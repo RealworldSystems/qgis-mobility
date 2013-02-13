@@ -24,7 +24,9 @@ class StandaloneToolchain(object):
 
     def __init__(self, recon):
         self._recon = recon
-    
+
+    def clean(self): pass   
+ 
     def make(self):
         if not os.path.exists(self._recon.get_toolchain_path()):
             standalone_chain = os.path.join(
