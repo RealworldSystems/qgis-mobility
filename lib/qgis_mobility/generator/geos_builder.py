@@ -79,9 +79,10 @@ class GeosBuilder(Builder):
         self.patch('TaggedLineStringSimplifier.h.patch', strip=1)
         self.patch('swig.patch', strip=1)
         self.sixty_four()
-        self.sed_ir('s/(hardcode_into_libs)=.*$/\\1=no/', 'configure')
+        self.sed_i('s/hardcode_into_libs=.*/hardcode_into_libs=no/g', 'configure')
         self.sed_ir('s/(\-release \@VERSION_MAJOR\@\.\@VERSION_MINOR\@\.@VERSION_PATCH\@ \\\)/\-avoid\-version \\\/g', 'source/Makefile.am')
-        self.sed_ir('s/(\-version\-info \@CAPI_INTERFACE_CURRENT\@\:\@CAPI_INTERFACE_REVISION\@\:\@CAPI_INTERFACE_AGE\@ \\\)/\-avoid\-version \\\/g', 'capi/Makefile.am') 
+        self.sed_ir('s/(\-version\-info \@CAPI_INTERFACE_CURRENT\@\:\@CAPI_INTERFACE_REVISION\@\:\@CAPI_INTERFACE_AGE\@ \\\)/-avoid\-version \\\/g', 'capi/Makefile.am')
+        #self.sed_i('s/hardcode_into_libs/leave_me_alone/g', 'ltmain.sh')
         self.fix_config_sub_and_guess()
         self.run_autotools_and_make() 
         distutils.dir_util.copy_tree(os.path.join(self.get_build_path(), 'include'),
