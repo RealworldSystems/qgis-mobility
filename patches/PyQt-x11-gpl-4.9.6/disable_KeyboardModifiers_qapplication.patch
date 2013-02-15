@@ -1,0 +1,17 @@
+diff -c -L /home/sjoerd/.qgis_mobility_generator_cache/source/PyQt-x11-gpl-4.9.6/PyQt-x11-gpl-4.9.6/sip/QtGui/qapplication.sip -L \#\<buffer\ qapplication.sip\> /home/sjoerd/.qgis_mobility_generator_cache/source/PyQt-x11-gpl-4.9.6/PyQt-x11-gpl-4.9.6/sip/QtGui/qapplication.sip /tmp/user/1000/buffer-content-4515yEQ
+*** a/sip/QtGui/qapplication.sip
+--- b/sip/QtGui/qapplication.sip
+***************
+*** 1158,1166 ****
+  %If (Qt_4_6_0 -)
+      bool autoSipEnabled() const;
+  %End
+- %If (Qt_4_8_0 -)
+-     static Qt::KeyboardModifiers queryKeyboardModifiers();
+- %End
+  
+  private:
+      QApplication(const QApplication &);
+--- 1158,1163 ----
+
+Diff finished.  Fri Feb 15 14:00:01 2013

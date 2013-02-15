@@ -117,22 +117,6 @@ class Recon(object):
                 raise EnvironmentError("Could not determine path: " + path)
 
 
-def __purge_cache_path(recon):
-    """ Purges the source path but keeps build targets """
-    rmtree(os.path.join(recon.get_cache_path(), 'source'))
-
-def __distclean(recon):
-    """ Removes everything """
-    
-    # This removes the whole tree of build fragments. To do this,
-    # it needs to destroy hostpython (which is where this file
-    # is running). Therefore, a shell file is executed replacing
-    # this process
-    script_path = recon.get_script_path()
-    distclean = os.path.join(script_path, "distclean.sh")
-    os.execlp(distclean, distclean)
-    
-
 def __workout_targets(receiver, prefix="", start={}):
     for item in dir(receiver):
         if len(item) < 1 or item[0:1] != '_':
@@ -148,17 +132,11 @@ def __parsecommand(expression, parameters, recipe):
     """
     Parses the command range as given in expression
     """
-    
     targets = __workout_targets(recipe)
-    if 'purgecache' == expression:
-        __purge_cache_path(recon)
-    elif 'distclean' == expression:
-        __distclean(recon)
-    else:
-        receiver, attr = targets[expression]
-        if (len(inspect.getargspec(attr).args) - 1) != len(parameters):
-            raise ValueError("Count of parameters is off")
-        attr(*parameters)
+    receiver, attr = targets[expression]
+    if (len(inspect.getargspec(attr).args) - 1) != len(parameters):
+        raise ValueError("Count of parameters is off")
+    attr(*parameters)
         
 
 def run(cache_path):

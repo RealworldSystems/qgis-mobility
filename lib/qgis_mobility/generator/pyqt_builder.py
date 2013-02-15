@@ -94,13 +94,13 @@ class PyQtBuilder(PythonianBuilder):
         output = self.wget('http://sourceforge.net/projects/pyqt/files/PyQt4/' + 
                            self.small_version() + '/' + self.library_name() + '.tar.gz/download')
 
-        self.unpack(output)
+        #self.unpack(output)
 
-        self.push_current_source_path(os.path.join(self.get_source_path(), self.library_name()))
+        #self.push_current_source_path(os.path.join(self.get_source_path(), self.library_name()))
 
-        self.run_py_configure_and_make(options=['--confirm-license'], host=True)
-        self.pop_current_source_path()
-        shutil.rmtree(os.path.join(self.get_source_path(), self.library_name()))
+        #self.run_py_configure_and_make(options=['--confirm-license'], host=True)
+        #self.pop_current_source_path()
+        #shutil.rmtree(os.path.join(self.get_source_path(), self.library_name()))
         self.unpack(output)
         self.push_current_source_path(os.path.join(self.get_source_path(), self.library_name()))
 
@@ -110,9 +110,30 @@ class PyQtBuilder(PythonianBuilder):
         #shutil.copyfile(os.path.join(self.get_core_patch_path(), 'configure.py'),
         #                os.path.join(self.get_current_source_path(), 'configure.py'))
         self.patch('configure_py.patch', strip=1)
+        self.patch('disable_X11.patch', strip=1)
+        self.patch('hardcode_Q_PID.patch', strip=1)
+        self.patch('hardcode_HANDLE.patch', strip=1)
+        self.patch('hardcode_WId.patch', strip=1)
+        self.patch('hardcode_qreal.patch', strip=1)
+        self.patch('disable_QSound.patch', strip=1)
+        self.patch('disable_QSound_qapplication.patch', strip=1)
+        self.patch('disable_KeyboardModifiers_qguiapplication.patch', strip=1)
+        self.patch('disable_KeyboardModifiers_qapplication.patch', strip=1)
+
+        # self.patch('disable_graphicsproxywidget.patch', strip=1)
+        # self.patch('disable_graphicsproxywidget_qapplication.patch', strip=1)
+        # self.patch('disable_graphicsproxywidget_qgraphicsitem.patch', strip=1)
+        # self.patch('disable_graphicsproxywidget_qgraphicsscene.patch', strip=1)
+        # self.patch('disable_graphicsproxywidget_qwidget.patch', strip=1)
+        # self.patch('disable_graphicswidget.patch', strip=1)
+        # self.patch('disable_graphicswidget_qapplication.patch', strip=1)
+        # self.patch('disable_graphicswidget_qgraphicsitem.patch', strip=1)
+        # self.patch('disable_graphicswidget_qgraphicsscene.patch', strip=1)
+        # self.patch('disable_graphicswidget_qaction.patch', strip=1)
 
         options=['--confirm-license',
                  '-pandroid-g++', 
+                 '-eQtGui',
                  '-eQtCore', '-eQtDeclarative', '-eQtScript', '-eQtNetwork', 
                  '-eQtMultimedia', '-eQtScriptTools', '-eQtSql', '-eQtSvg', '-eQtTest',
                  '-eQtXml', '-eQtXmlPatterns',
@@ -128,7 +149,8 @@ class PyQtBuilder(PythonianBuilder):
                         'CXXFLAGS+= -fpermissive --sysroot=' + sysroot,
                         'CXX=' + mappings['CXX'],
                         'LINK=' + mappings['CC'],
-                        'LFLAGS+=' + flags['LDFLAGS']  + ' --sysroot=' + sysroot])
+                        'LFLAGS+=' + flags['LDFLAGS']  + ' --sysroot=' + sysroot +
+                        ' -L' + self.get_output_library_path() + ' -lpython2.7'])
         #for mapping in mappings:
         #    if len(mappings[mapping]) > 0:
         #        options.extend([mapping + '=' + mappings[mapping]])

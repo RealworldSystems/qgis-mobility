@@ -331,8 +331,10 @@ class Builder(object):
         args.extend(environmental)
         args.extend(self.get_default_configure_flags())
         all_processes = [args]
-        #make sure rpath is skipped
-        self.sed_i('s/hardcode_into_libs/leave_me_alone/g', 'ltmain.sh')
+        # make sure rpath is skipped
+        # Only perform this if ltmain.sh is available
+        if os.path.exists('ltmain.sh'):
+            self.sed_i('s/hardcode_into_libs/leave_me_alone/g', 'ltmain.sh')
         if runmakeinstall: all_processes.extend([['make'], ['make', 'install']])
 
         for arguments in all_processes:

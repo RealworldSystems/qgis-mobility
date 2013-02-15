@@ -167,3 +167,19 @@ class Recipe(object):
                                     all_values()))
         self.all = Recipe._All(self.recipe)
         self.creator = Creator(recon)
+        self.__recon = recon
+    
+    def distclean(self):
+        """ Removes everything """
+        
+        # This removes the whole tree of build fragments. To do this,
+        # it needs to destroy hostpython (which is where this file
+        # is running). Therefore, a shell file is executed replacing
+        # this process
+        script_path = self.__recon.get_script_path()
+        distclean = os.path.join(script_path, "distclean.sh")
+        os.execlp(distclean, distclean)
+
+        def __purge_cache_path(self):
+            """ Purges the source path but keeps build targets """
+            rmtree(os.path.join(__recon.get_cache_path(), 'source'))

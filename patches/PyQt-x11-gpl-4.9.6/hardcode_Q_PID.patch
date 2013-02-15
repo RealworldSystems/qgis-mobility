@@ -1,0 +1,15 @@
+diff -c -L /home/sjoerd/.qgis_mobility_generator_cache/source/PyQt-x11-gpl-4.9.6/PyQt-x11-gpl-4.9.6/sip/QtCore/qprocess.sip -L \#\<buffer\ qprocess.sip\> /home/sjoerd/.qgis_mobility_generator_cache/source/PyQt-x11-gpl-4.9.6/PyQt-x11-gpl-4.9.6/sip/QtCore/qprocess.sip /tmp/user/1000/buffer-content-4515yvz
+*** a/sip/QtCore/qprocess.sip
+--- b/sip/QtCore/qprocess.sip
+***************
+*** 31,36 ****
+--- 31,37 ----
+  %If (WS_X11 || WS_MACX)
+  typedef qint64 Q_PID;
+  %End
++ typedef qint64 Q_PID;
+  
+  class QProcess : QIODevice
+  {
+
+Diff finished.  Fri Feb 15 10:48:38 2013

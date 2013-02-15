@@ -1,0 +1,24 @@
+diff -c -L /home/sjoerd/.qgis_mobility_generator_cache/source/PyQt-x11-gpl-4.9.6/PyQt-x11-gpl-4.9.6/sip/QtCore/qnamespace.sip -L \#\<buffer\ qnamespace.sip\> /home/sjoerd/.qgis_mobility_generator_cache/source/PyQt-x11-gpl-4.9.6/PyQt-x11-gpl-4.9.6/sip/QtCore/qnamespace.sip /tmp/user/1000/buffer-content-4515k5C
+*** a/sip/QtCore/qnamespace.sip
+--- b/sip/QtCore/qnamespace.sip
+***************
+*** 1670,1678 ****
+  %End
+  %End
+  %If (- Qt_5_0_0)
+- %If (WS_X11)
+-     typedef unsigned long HANDLE;
+- %End
+  %End
+  %If (PyQt_Deprecated_5_0)
+      typedef Qt::WindowFlags WFlags;
+--- 1670,1676 ----
+  %End
+  %End
+  %If (- Qt_5_0_0)
++ typedef unsigned long HANDLE;
+  %End
+  %If (PyQt_Deprecated_5_0)
+      typedef Qt::WindowFlags WFlags;
+
+Diff finished.  Fri Feb 15 10:55:11 2013

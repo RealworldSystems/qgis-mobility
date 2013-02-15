@@ -1,0 +1,20 @@
+diff -c -L /home/sjoerd/.qgis_mobility_generator_cache/source/PyQt-x11-gpl-4.9.6/PyQt-x11-gpl-4.9.6/sip/QtCore/qglobal.sip -L \#\<buffer\ qglobal.sip\> /home/sjoerd/.qgis_mobility_generator_cache/source/PyQt-x11-gpl-4.9.6/PyQt-x11-gpl-4.9.6/sip/QtCore/qglobal.sip /tmp/user/1000/buffer-content-4515y9b
+*** a/sip/QtCore/qglobal.sip
+--- b/sip/QtCore/qglobal.sip
+***************
+*** 49,60 ****
+  typedef unsigned long long quint64;
+  typedef qint64 qlonglong;
+  typedef quint64 qulonglong;
+- %If (PyQt_qreal_double)
+- typedef double qreal;
+- %End
+- %If (!PyQt_qreal_double)
+  typedef float qreal;
+- %End
+  typedef unsigned char uchar;
+  typedef unsigned short ushort;
+  typedef unsigned int uint;
+--- 49,55 ----
+
+Diff finished.  Fri Feb 15 12:43:58 2013

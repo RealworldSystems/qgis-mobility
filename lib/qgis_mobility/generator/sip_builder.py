@@ -45,11 +45,12 @@ class SipBuilder(PythonianBuilder):
                         os.path.join(self.get_current_source_path(), 'specs', 'android-g++'))
         
         options=['-e' + self.get_include_path(), 
-                 '-pandroid-g++', 'INCDIR=' + self.get_include_path()]
+                 '-pandroid-g++', 'INCDIR=' + self.get_include_path(),
+                 'LFLAGS=-L' + self.get_output_library_path() + ' -lpython2.7']
 
         self.run_py_configure_and_make(options=options)
         self.run_py_configure_and_make(host=True)
-        # Need to install SIP to hjost python
+        # Need to install SIP to host python
         
 
         self.mark_finished()
