@@ -32,10 +32,13 @@ class PythonianBuilder(Builder):
         self._python_builder = PythonBuilder(recon)
         self._host_python_vars = self._python_builder.get_host_python_vars()
     
-
-    def purge(self):
-        if os.path.exists(self.get_source_path()):
-            shutil.rmtree(self.get_source_path())
+    def get_build_finished_file(self):
+        """
+        The build finished file is altered, so the python builder can purge the
+        files if necessary
+        """
+        return os.path.join(
+            self.cache_path, '.py_fini' + self._library_name)
 
     def get_include_path(self):
         """ Overrides the default include path """
@@ -56,7 +59,7 @@ class PythonianBuilder(Builder):
     def get_site_packages_path(self):
         """ Adds the method to get the path with site packages """
         library_path = self._python_builder.get_output_library_path()
-        return os.path.join(library_path, 'site-packages')
+        return os.path.join(library_path, 'python2.7', 'site-packages')
 
     def get_sip_path(self):
         """ Adds the method get the path for sip """

@@ -88,6 +88,9 @@ class Builder(object):
         else:
             print "Already Done"
     
+    def remove(self):
+        os.remove(self.get_build_finished_file()) 
+
     def purge(self):
         if os.path.exists(self.get_build_path()):
             shutil.rmtree(self.get_build_path())

@@ -142,7 +142,7 @@ class Recipe(object):
                 print '='*80
                 print "Cleaning", self._builder.human_name() 
                 print '='*80
-                os.remove(self._builder.get_build_finished_file()) 
+                self._builder.remove()
             else:
                 print '='*80
                 print "Already cleaned", self._builder.human_name() 

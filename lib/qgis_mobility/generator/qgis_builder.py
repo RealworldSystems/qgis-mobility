@@ -205,9 +205,9 @@ class QGisBuilder(Builder):
                       'ENABLE_TESTS' : 'OFF',
                       'BINDINGS_GLOBAL_INSTALL' : 'OFF',
                       'PYTHON_EXECUTABLE' : host_python_vars.python,
-                      '_find_sip_py' : os.path.join(cmake_path, 'FindSIP.py'),
+                      '_find_sip_py' : os.path.join(self.get_patch_path(), 'FindSIP.py'),
                       '_find_lib_python_py' : os.path.join(cmake_path, 'FindLibPython.py'),
-                      '_find_pyqt_py' : os.path.join(cmake_path, 'FindPyQt.py'),
+                      '_find_pyqt_py' : os.path.join(self.get_patch_path(), 'FindPyQt.py'),
                       '_python_compile_py' : os.path.join(cmake_path, 'PythonCompile.py'),
                       'PYTHON_LIBRARY' : os.path.join(python_builder.get_output_library_path(),
                                                       'libpython2.7.so'),
@@ -229,6 +229,12 @@ class QGisBuilder(Builder):
         self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.gui.*$//',
                     os.path.join(self.get_current_source_path(), 
                                  'python', 'CMakeLists.txt'))
+        self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.analysis.*$//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'CMakeLists.txt'))
+        self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.networkanalysis.*$//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'CMakeLists.txt'))
         self.sed_ie('s/void adjustBoxSize.*$//',
                     os.path.join(self.get_current_source_path(), 
                                  'python', 'core', 'qgscomposerscalebar.sip'))
@@ -238,9 +244,36 @@ class QGisBuilder(Builder):
         self.sed_ie('s/%Include qgsapplication.sip//',
                     os.path.join(self.get_current_source_path(), 
                                  'python', 'core', 'core.sip'))
-        #self.sed_ie('s|%Import QtGui/QtGuimod.sip||',
-        #            os.path.join(self.get_current_source_path(), 
-        #                         'python', 'core', 'core.sip'))
+        self.sed_ie('s/^.*encodeRealVector.*$//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'core', 'symbology-ng-core.sip'))
+        self.sed_ie('s/^.*decodeRealVector.*$//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'core', 'symbology-ng-core.sip'))
+        
+        # self.sed_ie('14,100d',
+        #             os.path.join(self.get_current_source_path(), 
+        #                          'python', 'core', 'core.sip'))
+
+        # self.sed_ie('8,2d',
+        #             os.path.join(self.get_current_source_path(), 
+        #                          'python', 'core', 'core.sip'))
+        
+        # self.sed_ie('$a %Include qgsrect.sip',
+        #             os.path.join(self.get_current_source_path(), 
+        #                          'python', 'core', 'core.sip'))
+        # self.sed_ie('$a %Include qgspoint.sip',
+        #             os.path.join(self.get_current_source_path(), 
+        #                          'python', 'core', 'core.sip'))
+
+        self.sed_ie('s/.*//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'analysis', 'analysis.sip'))
+
+        self.sed_ie('s/.*//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'analysis', 'network', 'networkanalysis.sip'))
+
 
         os.remove(os.path.join(self.get_current_source_path(), 
                                  'python', 'core', 'qgsapplication.sip'))

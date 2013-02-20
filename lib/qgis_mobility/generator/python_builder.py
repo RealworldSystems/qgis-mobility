@@ -46,6 +46,13 @@ class PythonBuilder(Builder):
         return os.pathsep.join([self.get_recon().get_ndk_path(),
                                 Builder.get_path(self)])
 
+    def remove(self):
+        Builder.remove(self)
+        for fn in os.listdir(self.cache_path):
+            if len(fn) > 8 and ".py_fini" == fn[:8]:
+                os.remove(fn)
+
+
     def get_include_path(self):
         """ The library path is in the build path """
         return os.path.join(self.get_build_path(), 'include', 'python2.7')

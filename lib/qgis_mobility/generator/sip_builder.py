@@ -46,7 +46,10 @@ class SipBuilder(PythonianBuilder):
         
         options=['-e' + self.get_include_path(), 
                  '-pandroid-g++', 'INCDIR=' + self.get_include_path(),
-                 'LFLAGS=-L' + self.get_output_library_path() + ' -lpython2.7']
+                 'CXXFLAGS=-mthumb --std=gnu++0x',
+                 'CFLAGS=-mthumb',
+                 'LFLAGS=-L' + self.get_output_library_path() + ' -lpython2.7 -Wl,--fix-cortex-a8',
+                 'STRIP=']
 
         self.run_py_configure_and_make(options=options)
         self.run_py_configure_and_make(host=True)

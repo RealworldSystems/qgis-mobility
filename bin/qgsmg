@@ -57,6 +57,7 @@ scan_for g++ "GNU C++"
 scan_for getopts "Bourne Again Shell"
 scan_for readlink
 scan_for dirname
+scan_for cmake
 
 # Clean two newlines
 echo
