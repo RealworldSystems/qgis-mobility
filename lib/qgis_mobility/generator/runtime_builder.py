@@ -35,12 +35,35 @@ class RuntimeBuilder(Builder):
         return 'Runtime Build Process'
 
 
+    def pyqt4_override_flags(self):
+        return "-x QSETINT_CONVERSION -x QSETTYPE_CONVERSION -x VendorID -t WS_UNKOWN -x PyQt_NoPrintRangeBug -t Qt_4_8_0 -x Py_v3 -g"
+
+    def sip_dir(self):
+        return os.path.join(self.cache_path, 
+                            'build', 'Python-2.7.2', 'share', 'sip')
+
+    def host_python_binary_path(self):
+        return os.path.join(self.cache_path, 'hostpython', 'bin')
+
+    def get_default_flags(self):
+        cflags = '-Wno-psabi -fsigned-char -mthumb'
+        ldflags = '-Wl,--fix-cortex-a8'
+        return { 'CFLAGS'   : cflags,
+                 'LDFLAGS'  : ldflags,
+                 'CXXFLAGS' : cflags}
+
+
     def get_default_configure_flags(self):
         flags = Builder.get_default_configure_flags(self)
         flags.extend(['--with-qgis-base-path=' + QGisBuilder(self.get_recon()).get_build_path(),
                       '--with-python-base-path=' + PythonBuilder(self.get_recon()).get_build_path(),
                       '--with-qt-base-path=' + self.get_recon().get_qt_path(),
-                      '--with-qt-include-path=' + os.path.join(self.get_recon().get_qt_path(), 'include')])
+                      '--with-qt-include-path=' + os.path.join(self.get_recon().get_qt_path(), 'include'),
+                      '--with-sip=' + self.sip_dir(),
+                      '--with-pyqt4-flags=' + self.pyqt4_override_flags(),
+                      '--with-pyqt4-dir=' + self.sip_dir(),
+                      '--with-sip-binary-path=' + self.host_python_binary_path(),
+                      '--disable-silent-rules'])
         return flags
 
     def salt_flags(self, flags):
@@ -55,9 +78,6 @@ class RuntimeBuilder(Builder):
     def do_build(self):
         """ Runs the actual build process """
         distutils.dir_util.copy_tree(self.get_runtime_path(), self.get_source_path())
-        #self.run_aclocal()
-        #self.run_libtoolize()
-        #self.run_automake_add_missing()
         self.run_autoreconf()
         self.sed_ir('s/(hardcode_into_libs)=.*$/\\1=no/', 'configure')
         self.fix_config_sub_and_guess()
