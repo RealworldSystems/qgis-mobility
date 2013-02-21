@@ -19,6 +19,8 @@
 from qgis_mobility.generator.builder import Builder
 import distutils.dir_util
 import os
+import glob
+import shutil
 from qgis_mobility.generator.python_builder import PythonBuilder
 from qgis_mobility.generator.qgis_builder import QGisBuilder
 
@@ -45,12 +47,17 @@ class RuntimeBuilder(Builder):
     def host_python_binary_path(self):
         return os.path.join(self.cache_path, 'hostpython', 'bin')
 
+    def get_default_toolchain_mappings(self):
+        flags = Builder.get_default_toolchain_mappings(self)
+        flags['LD_RUN_PATH'] = os.path.join(self.get_recon().get_qt_path(), 'lib')
+        return flags
+
     def get_default_flags(self):
         cflags = '-Wno-psabi -fsigned-char -mthumb'
         ldflags = '-Wl,--fix-cortex-a8'
         return { 'CFLAGS'   : cflags,
                  'LDFLAGS'  : ldflags,
-                 'CXXFLAGS' : cflags}
+                 'CXXFLAGS' : cflags }
 
 
     def get_default_configure_flags(self):
@@ -58,11 +65,14 @@ class RuntimeBuilder(Builder):
         flags.extend(['--with-qgis-base-path=' + QGisBuilder(self.get_recon()).get_build_path(),
                       '--with-python-base-path=' + PythonBuilder(self.get_recon()).get_build_path(),
                       '--with-qt-base-path=' + self.get_recon().get_qt_path(),
+                      '--with-qt-library-path=' + os.path.join(self.get_source_path(), 'lib'),
                       '--with-qt-include-path=' + os.path.join(self.get_recon().get_qt_path(), 'include'),
                       '--with-sip=' + self.sip_dir(),
                       '--with-pyqt4-flags=' + self.pyqt4_override_flags(),
                       '--with-pyqt4-dir=' + self.sip_dir(),
                       '--with-sip-binary-path=' + self.host_python_binary_path(),
+                      '--with-runtime-prefix-path=/data/data/org.kde.necessitas.example.QGisMobility/files',
+                      '--with-project-code-path=/data/data/org.kde.necessitas.example.QGisMobility/files/centercontrol',
                       '--disable-silent-rules'])
         return flags
 
@@ -78,6 +88,11 @@ class RuntimeBuilder(Builder):
     def do_build(self):
         """ Runs the actual build process """
         distutils.dir_util.copy_tree(self.get_runtime_path(), self.get_source_path())
+        os.mkdir(os.path.join(self.get_source_path(), 'lib'))
+        for libname in glob.glob(os.path.join(self.get_recon().get_qt_path(), 'lib', '*.so')):
+            outlibname = os.path.join(self.get_source_path(), 'lib', os.path.split(libname)[-1])
+            print "Copying for libtool's sake %s to %s" % (libname, outlibname)
+            shutil.copyfile(libname, outlibname)
         self.run_autoreconf()
         self.sed_ir('s/(hardcode_into_libs)=.*$/\\1=no/', 'configure')
         self.fix_config_sub_and_guess()

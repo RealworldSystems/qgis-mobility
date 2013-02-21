@@ -217,39 +217,59 @@ class QGisBuilder(Builder):
         # Need to prepend CMAKE_C(XX)_FLAGS to the already set flags
         self.sed_ie('1iinclude_directories("%s")' % 
                    python_builder.get_include_path(), 'CMakeLists.txt')
-        self.sed_ie('s/ADD_SUBDIRECTORY(gui)//', 
+        #self.sed_ie('s/ADD_SUBDIRECTORY(gui)//', 
+        #            os.path.join(self.get_current_source_path(), 
+        #                         'src', 'CMakeLists.txt'))
+        #self.sed_ie('s|../gui||', 
+        #            os.path.join(self.get_current_source_path(), 
+        #                         'src', 'python', 'CMakeLists.txt'))
+        #self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.gui.*$//',
+        #            os.path.join(self.get_current_source_path(), 
+        #                         'python', 'CMakeLists.txt'))
+        #self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.analysis.*$//',
+        #            os.path.join(self.get_current_source_path(), 
+        #                         'python', 'CMakeLists.txt'))
+        #self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.networkanalysis.*$//',
+        #            os.path.join(self.get_current_source_path(), 
+        #                         'python', 'CMakeLists.txt'))
+        
+        # There appears not to be a good (sane) argument to have qgsapplication
+        # exported as something instantiatable, as most likely, the 
+        # provider/plugin will not be at the wanted location.
+
+        # The runtime catches this through specific configuration elements and
+        # uses QApplication (which can be retrieved) as it's normal 
+        # instantiation routine.
+
+        self.sed_ie('s/%Include qgsapplication.sip//',
                     os.path.join(self.get_current_source_path(), 
-                                 'src', 'CMakeLists.txt'))
-        self.sed_ie('s/ADD_SUBDIRECTORY(providers)//', 
-                    os.path.join(self.get_current_source_path(), 
-                                 'src', 'CMakeLists.txt'))
-        self.sed_ie('s|../gui||', 
-                    os.path.join(self.get_current_source_path(), 
-                                 'src', 'python', 'CMakeLists.txt'))
-        self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.gui.*$//',
-                    os.path.join(self.get_current_source_path(), 
-                                 'python', 'CMakeLists.txt'))
-        self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.analysis.*$//',
-                    os.path.join(self.get_current_source_path(), 
-                                 'python', 'CMakeLists.txt'))
-        self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.networkanalysis.*$//',
-                    os.path.join(self.get_current_source_path(), 
-                                 'python', 'CMakeLists.txt'))
+                                 'python', 'core', 'core.sip'))
+
+        # In order to fix a number of compilation problems due to unsupported 
+        # types, most likely "doubles".
+        #
+        # In ARM-Qt, these need to be "floats" and should be encoded as qreal
+
         self.sed_ie('s/void adjustBoxSize.*$//',
                     os.path.join(self.get_current_source_path(), 
                                  'python', 'core', 'qgscomposerscalebar.sip'))
         self.sed_ie('s/void segmentPositions.*$//',
                     os.path.join(self.get_current_source_path(), 
                                  'python', 'core', 'qgscomposerscalebar.sip'))
-        self.sed_ie('s/%Include qgsapplication.sip//',
-                    os.path.join(self.get_current_source_path(), 
-                                 'python', 'core', 'core.sip'))
         self.sed_ie('s/^.*encodeRealVector.*$//',
                     os.path.join(self.get_current_source_path(), 
                                  'python', 'core', 'symbology-ng-core.sip'))
         self.sed_ie('s/^.*decodeRealVector.*$//',
                     os.path.join(self.get_current_source_path(), 
                                  'python', 'core', 'symbology-ng-core.sip'))
+
+
+        self.sed_ie('s/^.*simpleMeasure.*$//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'analysis', 'qgsgeometryanalyzer.sip'))
+        self.sed_ie('s/^.*perimeterMeasure.*$//',
+                    os.path.join(self.get_current_source_path(), 
+                                 'python', 'analysis', 'qgsgeometryanalyzer.sip'))
         
         # self.sed_ie('14,100d',
         #             os.path.join(self.get_current_source_path(), 
@@ -266,13 +286,13 @@ class QGisBuilder(Builder):
         #             os.path.join(self.get_current_source_path(), 
         #                          'python', 'core', 'core.sip'))
 
-        self.sed_ie('s/.*//',
-                    os.path.join(self.get_current_source_path(), 
-                                 'python', 'analysis', 'analysis.sip'))
+        #self.sed_ie('s/.*//',
+        #            os.path.join(self.get_current_source_path(), 
+        #                         'python', 'analysis', 'analysis.sip'))
 
-        self.sed_ie('s/.*//',
-                    os.path.join(self.get_current_source_path(), 
-                                 'python', 'analysis', 'network', 'networkanalysis.sip'))
+        #self.sed_ie('s/.*//',
+        #            os.path.join(self.get_current_source_path(), 
+        #                         'python', 'analysis', 'network', 'networkanalysis.sip'))
 
 
         os.remove(os.path.join(self.get_current_source_path(), 

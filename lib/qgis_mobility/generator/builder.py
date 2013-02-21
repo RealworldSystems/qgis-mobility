@@ -62,7 +62,8 @@ class Builder(object):
     def insert_config_path_flag(self, flags):
         pkg_config_path = os.path.join(self.get_build_path(), 'lib', 'pkg_config')
         if not 'PKG_CONFIG_PATH' in flags:
-            flags['PKG_CONFIG_PATH'] = pkg_config_path
+            flags['PKG_CONFIG_PATH'] = pkg_config_path + os.pathsep + os.path.join(
+                self.get_recon().get_qt_path(), 'lib', 'pkgconfig')
         else:
             flags['PKG_CONFIG_PATH'] += os.pathsep + pkg_config_path
         return flags
@@ -312,6 +313,10 @@ class Builder(object):
         
 
     def run_autotools_and_make(self, where=None, harness=True, runmakeinstall=True):
+        if os.path.exists(os.path.join(self.get_current_source_path(), 'ltmain.sh')):
+            print "Bypassing ltmain hardcoding"
+            self.sed_i('s/hardcode_into_libs/leave_me_alone/g', 'ltmain.sh')
+        
         harnessed_source_path = self.get_current_source_path()
         if harness:
             harnessed_source_path = os.path.join(self.get_current_source_path(), 'harness')
@@ -336,8 +341,6 @@ class Builder(object):
         all_processes = [args]
         # make sure rpath is skipped
         # Only perform this if ltmain.sh is available
-        if os.path.exists('ltmain.sh'):
-            self.sed_i('s/hardcode_into_libs/leave_me_alone/g', 'ltmain.sh')
         if runmakeinstall: all_processes.extend([['make'], ['make', 'install']])
 
         for arguments in all_processes:
