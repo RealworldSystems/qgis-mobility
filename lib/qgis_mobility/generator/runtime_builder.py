@@ -71,8 +71,8 @@ class RuntimeBuilder(Builder):
                       '--with-pyqt4-flags=' + self.pyqt4_override_flags(),
                       '--with-pyqt4-dir=' + self.sip_dir(),
                       '--with-sip-binary-path=' + self.host_python_binary_path(),
-                      '--with-runtime-prefix-path=/data/data/org.kde.necessitas.example.QGisMobility/files',
-                      '--with-project-code-path=/data/data/org.kde.necessitas.example.QGisMobility/files/centercontrol',
+                      '--with-preconfig-path=/data/data/org.kde.necessitas.example.QGisMobility/files',
+                      '--with-project-code-path=/data/data/org.kde.necessitas.example.QGisMobility/files/application',
                       '--disable-silent-rules'])
         return flags
 
