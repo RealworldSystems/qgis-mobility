@@ -50,7 +50,7 @@ class PythonBuilder(Builder):
         Builder.remove(self)
         for fn in os.listdir(self.cache_path):
             if len(fn) > 8 and ".py_fini" == fn[:8]:
-                os.remove(fn)
+                os.remove(os.path.join(self.cache_path, fn))
 
 
     def get_include_path(self):

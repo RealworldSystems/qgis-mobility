@@ -32,6 +32,11 @@ class PythonianBuilder(Builder):
         self._python_builder = PythonBuilder(recon)
         self._host_python_vars = self._python_builder.get_host_python_vars()
     
+    def purge(self):
+        if os.path.exists(self.get_source_path()):
+            shutil.rmtree(self.get_source_path())
+
+
     def get_build_finished_file(self):
         """
         The build finished file is altered, so the python builder can purge the
