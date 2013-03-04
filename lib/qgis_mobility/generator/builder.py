@@ -182,6 +182,7 @@ class Builder(object):
                  'CXX'    : self.get_tool('g++'),
                  'LD'     : self.get_tool('ld'),
                  'AR'     : self.get_tool('ar'),
+                 'STRIP'  : self.get_tool('strip'),
                  'RANLIB' : self.get_tool('ranlib'),
                  'AS'     : self.get_tool('as') }
 

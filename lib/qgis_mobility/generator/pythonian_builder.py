@@ -71,7 +71,7 @@ class PythonianBuilder(Builder):
         return os.path.join(self._python_builder.get_build_path(),
                             'share', 'sip')
 
-    def run_py_configure(self, options=[], host=False):
+    def run_py_configure(self, options=[], host=False, binaries=True):
         """ Adds the python configure.py runner, akin autoconf """
 
         
@@ -86,10 +86,13 @@ class PythonianBuilder(Builder):
         args = [self._host_python_vars.python,
                 'configure.py']
 
-        if not host: args.extend(
-                ['-b' + self.get_output_binaries_path(),
-                 '-d' + self.get_site_packages_path(),
-                 '-v' + self.get_sip_path()])
+        if not host: 
+            args.extend([
+                '-d' + self.get_site_packages_path(),
+                '-v' + self.get_sip_path()])
+            if binaries:
+                args.extend(['-b' + self.get_output_binaries_path()])
+
 
         args.extend(options)
 

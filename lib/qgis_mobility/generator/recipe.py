@@ -33,6 +33,7 @@ from qgis_mobility.generator.python_builder import PythonBuilder
 from qgis_mobility.generator.qgis_builder import QGisBuilder
 from qgis_mobility.generator.sip_builder import SipBuilder
 from qgis_mobility.generator.pyqt_builder import PyQtBuilder
+from qgis_mobility.generator.pyqtmobility_builder import PyQtMobilityBuilder
 from qgis_mobility.generator.runtime_builder import RuntimeBuilder
 from qgis_mobility.generator.creator import Creator
 
@@ -58,6 +59,7 @@ __dependency_class_chain = [
         PythonBuilder,
         SipBuilder,
         PyQtBuilder,
+        PyQtMobilityBuilder,
         QGisBuilder,
         RuntimeBuilder,
 ] 
