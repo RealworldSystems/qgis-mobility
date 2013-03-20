@@ -202,6 +202,7 @@ class QGisBuilder(Builder):
                       'WITH_SPATIALITE' : 'ON',
                       'WITH_TXT2TAGS_PDF' : 'OFF',
                       'WITH_QTMOBILITY' : 'ON',
+                      'WITH_PYSPATIALITE' : 'ON',
                       'ENABLE_TESTS' : 'OFF',
                       'BINDINGS_GLOBAL_INSTALL' : 'OFF',
                       'PYTHON_EXECUTABLE' : host_python_vars.python,
@@ -217,6 +218,10 @@ class QGisBuilder(Builder):
         # Need to prepend CMAKE_C(XX)_FLAGS to the already set flags
         self.sed_ie('1iinclude_directories("%s")' % 
                    python_builder.get_include_path(), 'CMakeLists.txt')
+        self.sed_ie('1iinclude_directories("%s")' % 
+                   SQLiteBuilder(self.get_recon()).get_include_path(), 'CMakeLists.txt')
+        self.sed_ie('1iinclude_directories("%s")' % 
+                   SpatialiteBuilder(self.get_recon()).get_include_path(), 'CMakeLists.txt')
         #self.sed_ie('s/ADD_SUBDIRECTORY(gui)//', 
         #            os.path.join(self.get_current_source_path(), 
         #                         'src', 'CMakeLists.txt'))
@@ -270,6 +275,10 @@ class QGisBuilder(Builder):
         self.sed_ie('s/^.*perimeterMeasure.*$//',
                     os.path.join(self.get_current_source_path(), 
                                  'python', 'analysis', 'qgsgeometryanalyzer.sip'))
+
+        self.sed_i('1i typedef qint64 Q_PID;',
+                   os.path.join(self.get_current_source_path(), 
+                                'python', 'core', 'core.sip'))
         
         # self.sed_ie('14,100d',
         #             os.path.join(self.get_current_source_path(), 
@@ -324,4 +333,8 @@ class QGisBuilder(Builder):
         distutils.dir_util.copy_tree(os.path.join(self.get_build_path(), 'include'),
                                      os.path.join(self.get_include_path()))
         
+        self.sed_i('s/typedef qint64 Q_PID;//',
+                   os.path.join(self.get_current_source_path(), 
+                                 'python', 'core', 'core.sip'))
+
         self.mark_finished()

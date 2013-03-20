@@ -73,6 +73,8 @@ class RuntimeBuilder(Builder):
                       '--with-sip-binary-path=' + self.host_python_binary_path(),
                       '--with-preconfig-path=/data/data/org.kde.necessitas.example.QGisMobility/files',
                       '--with-project-code-path=/data/data/org.kde.necessitas.example.QGisMobility/files/application',
+                      '--with-xtra-sip-dirs=' + os.path.join(QGisBuilder(self.get_recon()).get_source_path(),
+                                                             'qgis-1.8.0/python'),
                       '--disable-silent-rules'])
         return flags
 
