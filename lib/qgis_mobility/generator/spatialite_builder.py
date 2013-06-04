@@ -51,7 +51,7 @@ class SpatialiteBuilder(Builder):
 
     def get_default_configure_flags(self):
         flags = Builder.get_default_configure_flags(self)
-        flags.extend(['--disable-geosadvanced', '--disable-iconv'])
+        flags.extend(['--disable-geosadvanced', '--disable-iconv', '--disable-freexl'])
         return flags
     
 
