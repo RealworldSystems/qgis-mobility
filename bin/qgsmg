@@ -41,8 +41,8 @@ function scan_for {
     echo -n "$name [OK] "
 }
 
-# Most of the tools can be found by seeking there executable names, however,
-# there are a number of prerequisites which are different in there nature,
+# Most of the tools can be found by seeking their executable names, however,
+# there are a number of prerequisites which are different in their nature,
 # such as libraries. These libraries must be found as well, when deemed
 # necessary.
 function scan_for_lib {
