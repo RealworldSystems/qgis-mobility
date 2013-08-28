@@ -23,6 +23,7 @@ import glob
 import shutil
 from qgis_mobility.generator.python_builder import PythonBuilder
 from qgis_mobility.generator.qgis_builder import QGisBuilder
+from qgis_mobility.generator.pyqt_builder import PyQtBuilder
 
 
 class RuntimeBuilder(Builder):
@@ -98,7 +99,20 @@ class RuntimeBuilder(Builder):
         self.run_autoreconf()
         self.sed_ir('s/(hardcode_into_libs)=.*$/\\1=no/', 'configure')
         self.fix_config_sub_and_guess()
-        self.run_autotools_and_make()
+
+        # Need to remove Q_PID declaration in the source files temporarily
+        qprocess_sip_path = os.path.join(
+            PyQtBuilder(self.get_recon()).get_build_path(),
+            'share', 'sip', 'QtCore', 'qprocess.sip')            
+
+        try:
+            self.sed_ir('s|typedef qint64 Q_PID;|//typedef qint64 Q_PID;|',
+                        qprocess_sip_path)
+            self.run_autotools_and_make()
+        finally:
+            self.sed_ir('s|//typedef qint64 Q_PID;|typedef qint64 Q_PID;|',
+                        qprocess_sip_path)
+            
         source_include_path = os.path.join(self.get_build_path(), 'include')
         if os.path.exists(source_include_path):
             distutils.dir_util.copy_tree(

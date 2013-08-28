@@ -158,7 +158,7 @@ class PyQtBuilder(PythonianBuilder):
                     self.sed_i(sedstring, makefile)
                     sedstring = 's|copy /y|cp -f|'
                     self.sed_i(sedstring, makefile)
-                    sedstring = 's/\@if not exist[^|]*[|][|] mkdir/mkdir -p/'                    
+                    sedstring = 's/\@if not exist[^|]*[|][|] mkdir/mkdir -p/'
                     self.sed_ie(sedstring, makefile)
 
         main_makefile = os.path.join(self.get_current_source_path(), 'Makefile')
@@ -171,8 +171,5 @@ class PyQtBuilder(PythonianBuilder):
         
         self.run_make()
         self.run_make(install=True, makeopts=['INSTALL_ROOT=' + self.get_build_path()])
-
-        sip_path = os.path.join(self.get_build_path(), 'share', 'sip')
-        self.sed_ie('s|typedef qint64 Q_PID;|//typedef qint64 Q_PID;|', os.path.join(sip_path, 'qprocess.sip'))
 
         self.mark_finished()

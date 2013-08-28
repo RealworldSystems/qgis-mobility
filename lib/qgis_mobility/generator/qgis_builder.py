@@ -23,19 +23,16 @@ import shutil
 import subprocess
 import multiprocessing
 
-from qgis_mobility.generator.bzip2_builder import BZip2Builder
-from qgis_mobility.generator.libiconv_builder import LibiconvBuilder
-from qgis_mobility.generator.freexl_builder import FreeXLBuilder
 from qgis_mobility.generator.sqlite_builder import SQLiteBuilder
 from qgis_mobility.generator.geos_builder import GeosBuilder
 from qgis_mobility.generator.proj4_builder import Proj4Builder
 from qgis_mobility.generator.spatialite_builder import SpatialiteBuilder
 from qgis_mobility.generator.expat_builder import ExpatBuilder
 from qgis_mobility.generator.gdal_builder import GDALBuilder
-from qgis_mobility.generator.gsl_builder import GSLBuilder
 from qgis_mobility.generator.qwt_builder import QWTBuilder
 from qgis_mobility.generator.spatialindex_builder import SpatialindexBuilder
 from qgis_mobility.generator.python_builder import PythonBuilder
+from qgis_mobility.generator.pyqt_builder import PyQtBuilder
 
 class QGisBuilder(Builder):
     """ Represents the build strategy for the QGis library """
@@ -222,22 +219,7 @@ class QGisBuilder(Builder):
                    SQLiteBuilder(self.get_recon()).get_include_path(), 'CMakeLists.txt')
         self.sed_ie('1iinclude_directories("%s")' % 
                    SpatialiteBuilder(self.get_recon()).get_include_path(), 'CMakeLists.txt')
-        #self.sed_ie('s/ADD_SUBDIRECTORY(gui)//', 
-        #            os.path.join(self.get_current_source_path(), 
-        #                         'src', 'CMakeLists.txt'))
-        #self.sed_ie('s|../gui||', 
-        #            os.path.join(self.get_current_source_path(), 
-        #                         'src', 'python', 'CMakeLists.txt'))
-        #self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.gui.*$//',
-        #            os.path.join(self.get_current_source_path(), 
-        #                         'python', 'CMakeLists.txt'))
-        #self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.analysis.*$//',
-        #            os.path.join(self.get_current_source_path(), 
-        #                         'python', 'CMakeLists.txt'))
-        #self.sed_ie('s/ADD_SIP_PYTHON_MODULE(qgis.networkanalysis.*$//',
-        #            os.path.join(self.get_current_source_path(), 
-        #                         'python', 'CMakeLists.txt'))
-        
+
         # There appears not to be a good (sane) argument to have qgsapplication
         # exported as something instantiatable, as most likely, the 
         # provider/plugin will not be at the wanted location.
@@ -280,61 +262,45 @@ class QGisBuilder(Builder):
                    os.path.join(self.get_current_source_path(), 
                                 'python', 'core', 'core.sip'))
         
-        # self.sed_ie('14,100d',
-        #             os.path.join(self.get_current_source_path(), 
-        #                          'python', 'core', 'core.sip'))
-
-        # self.sed_ie('8,2d',
-        #             os.path.join(self.get_current_source_path(), 
-        #                          'python', 'core', 'core.sip'))
-        
-        # self.sed_ie('$a %Include qgsrect.sip',
-        #             os.path.join(self.get_current_source_path(), 
-        #                          'python', 'core', 'core.sip'))
-        # self.sed_ie('$a %Include qgspoint.sip',
-        #             os.path.join(self.get_current_source_path(), 
-        #                          'python', 'core', 'core.sip'))
-
-        #self.sed_ie('s/.*//',
-        #            os.path.join(self.get_current_source_path(), 
-        #                         'python', 'analysis', 'analysis.sip'))
-
-        #self.sed_ie('s/.*//',
-        #            os.path.join(self.get_current_source_path(), 
-        #                         'python', 'analysis', 'network', 'networkanalysis.sip'))
-
 
         os.remove(os.path.join(self.get_current_source_path(), 
                                  'python', 'core', 'qgsapplication.sip'))
 
 
 
-        #self.sed_ie('s/LINK_DIRECTORIES\(${CMAKE_BINARY_DIR}/src/core "\n', 'CMakeLists.txt')
-        
-        #os.rename(os.path.join(self.get_current_source_path(), 'src', 'gui'),
-        #          os.path.join(self.get_current_source_path(), 'src', 'nogui'))
-        args = ['cmake']        
-        for arg in arguments:
-            args.extend(['-D' + arg + '=' + arguments[arg]])
-        args.extend(['.'])
-        process = subprocess.Popen(args, cwd=self.get_current_source_path(), env=our_env)
-        process.communicate(None)
-        if process.returncode != 0:
-            raise ValueError("Failed Process:", args[0])
-        cpuflag = '-j' + str(multiprocessing.cpu_count())
-        process = subprocess.Popen(['make',
-                                    'VERBOSE=1', cpuflag, 'install'],
-                                   cwd=self.get_current_source_path(), env=our_env)
-        process.communicate(None)
-        if process.returncode != 0:
-            raise ValueError("Failed Process:", args[0])
-        print 'Done building QGis Base'
-        
-        distutils.dir_util.copy_tree(os.path.join(self.get_build_path(), 'include'),
-                                     os.path.join(self.get_include_path()))
-        
-        self.sed_i('s/typedef qint64 Q_PID;//',
-                   os.path.join(self.get_current_source_path(), 
-                                 'python', 'core', 'core.sip'))
+        # Need to remove Q_PID declaration in the source files temporarily
+        qprocess_sip_path = os.path.join(
+            PyQtBuilder(self.get_recon()).get_build_path(),
+            'share', 'sip', 'QtCore', 'qprocess.sip')            
 
+        try:
+            self.sed_ir('s|typedef qint64 Q_PID;|//typedef qint64 Q_PID;|',
+                        qprocess_sip_path)
+            args = ['cmake']        
+            for arg in arguments:
+                args.extend(['-D' + arg + '=' + arguments[arg]])
+            args.extend(['.'])
+            process = subprocess.Popen(args, cwd=self.get_current_source_path(), env=our_env)
+            process.communicate(None)
+            if process.returncode != 0:
+                raise ValueError("Failed Process:", args[0])
+            cpuflag = '-j' + str(multiprocessing.cpu_count())
+            process = subprocess.Popen(['make',
+                                        'VERBOSE=1', cpuflag, 'install'],
+                                       cwd=self.get_current_source_path(), env=our_env)
+            process.communicate(None)
+            if process.returncode != 0:
+                raise ValueError("Failed Process:", args[0])
+            print 'Done building QGis Base'
+        
+            distutils.dir_util.copy_tree(os.path.join(self.get_build_path(), 'include'),
+                                         os.path.join(self.get_include_path()))
+        
+            self.sed_i('s/typedef qint64 Q_PID;//',
+                       os.path.join(self.get_current_source_path(), 
+                                    'python', 'core', 'core.sip'))
+        finally:
+            self.sed_ir('s|//typedef qint64 Q_PID;|typedef qint64 Q_PID;|',
+                        qprocess_sip_path)
+        
         self.mark_finished()

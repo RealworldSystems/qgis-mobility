@@ -41,15 +41,40 @@ function scan_for {
     echo -n "$name [OK] "
 }
 
+# Most of the tools can be found by seeking there executable names, however,
+# there are a number of prerequisites which are different in there nature,
+# such as libraries. These libraries must be found as well, when deemed
+# necessary.
+function scan_for_lib {
+    local name="$1"
+    local likely_package="$2"
+    if [ "x$likely_package" = "x" ] ; then
+	likely_package="$name"
+    fi
+
+    ld -l$name -shared -o/dev/null 2>&1 || {
+	echo " "
+	echo >&2 "- F A T A L ------------------------------------------------"
+	echo >&2 "While booting, lib$name.so has not been found!"
+	echo >&2 "Please install your distribution's package containing a"
+	echo >&2 "recent $likely_package"
+	exit 1	
+    }
+
+    echo -n "lib$name.so [OK] "
+}
+
 # Do the actual scanning for a number of necessary prerequisites. This list should
 # reflect the actual necessary elements.
 
-echo -n "Checking: "
+echo "Checking Binaries: "
 
+scan_for ld "Linker"
 scan_for make "Build Essential"
 scan_for automake "Autotools"
 scan_for autoconf "Autotools"
 scan_for autoreconf "Autotools"
+scan_for libtool
 scan_for flex
 scan_for bison
 scan_for gcc "GNU Compiler Collection"
@@ -58,6 +83,18 @@ scan_for getopts "Bourne Again Shell"
 scan_for readlink
 scan_for dirname
 scan_for cmake
+scan_for svn "Subversion"
+scan_for qmake "Qt 4 - qt4-qmake"
+
+# Clean two newlines
+echo
+echo
+
+# Check for libraries which are considered essential
+echo "Checking Libraries: "
+
+scan_for_lib QtCore
+scan_for_lib QtXml
 
 # Clean two newlines
 echo

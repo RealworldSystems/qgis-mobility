@@ -96,7 +96,7 @@ class PythonianBuilder(Builder):
 
         args.extend(options)
 
-        
+        print "PATH:", our_env['PATH']
         
         print "Process arguments:", args
         

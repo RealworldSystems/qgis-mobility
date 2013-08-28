@@ -68,22 +68,35 @@ class PyQtMobilityBuilder(PyQtBuilder):
         self.sed_ie('s|flags.append.pyqt.pyqt_sip_dir.|flags.append(\'' + sip_path + '\')|', 'configure.py')
 
 
-        self.run_py_configure(options, binaries=False)
+        # Need to remove Q_PID declaration in the source files temporarily
+        qprocess_sip_path = os.path.join(
+            PyQtBuilder(self.get_recon()).get_build_path(),
+            'share', 'sip', 'QtCore', 'qprocess.sip')            
         
-        makeopts = ['CC=' + mappings['CC'],
-                    'CFLAGS+=--sysroot=' + sysroot + ' -mthumb' + ' -I' + self.get_include_path() + ' -I' + os.path.join(self.get_recon().get_qt_path(), 'include'),
-                    'CXXFLAGS+= -fpermissive --sysroot=' + sysroot + ' -mthumb' + ' -I' + self.get_include_path() + ' -I' + os.path.join(self.get_recon().get_qt_path(), 'include'),
-                    'CXX=' + mappings['CXX'],
-                    'LINK=' + mappings['CC'],
-                    'LIBS=-L' + os.path.join(self.get_recon().get_qt_path(), 'lib') + ' -L' + self.get_output_library_path() + ' -lQtSensors -lQtLocation -lQtCore -lQtGui -lpython2.7',
-                    'INSTALL_ROOT=' + self.get_build_path()]
+        try:
+            self.sed_ir('s/%If \(WS_X11 \|\| WS_MACX\)/%If \(WS_WIN\)/',
+                        qprocess_sip_path)
+            self.run_py_configure(options, binaries=False)
+            
+            
+            makeopts = ['CC=' + mappings['CC'],
+                        'CFLAGS+=--sysroot=' + sysroot + ' -mthumb' + ' -I' + self.get_include_path() + ' -I' + os.path.join(self.get_recon().get_qt_path(), 'include'),
+                        'CXXFLAGS+= -fpermissive --sysroot=' + sysroot + ' -mthumb' + ' -I' + self.get_include_path() + ' -I' + os.path.join(self.get_recon().get_qt_path(), 'include'),
+                        'CXX=' + mappings['CXX'],
+                        'LINK=' + mappings['CC'],
+                        'LIBS=-L' + os.path.join(self.get_recon().get_qt_path(), 'lib') + ' -L' + self.get_output_library_path() + ' -lQtSensors -lQtLocation -lQtCore -lQtGui -lpython2.7',
+                        'INSTALL_ROOT=' + self.get_build_path()]
+            
+            self.run_make(makeopts=makeopts)
+            
+            
+            self.sed_ie('s|strip|' + self.get_tool('strip') + '|', 'QtLocation/Makefile')
+            self.sed_ie('s|strip|' + self.get_tool('strip') + '|', 'QtSensors/Makefile')
+            
+            self.run_make(makeopts=makeopts, install=True)
 
-        self.run_make(makeopts=makeopts)
-
-
-        self.sed_ie('s|strip|' + self.get_tool('strip') + '|', 'QtLocation/Makefile')
-        self.sed_ie('s|strip|' + self.get_tool('strip') + '|', 'QtSensors/Makefile')
-
-        self.run_make(makeopts=makeopts, install=True)
+        finally:
+            self.sed_ir('s/%If \(WS_WIN\)/%If \(WS_X11 \|\| WS_MACX\)/',
+                        qprocess_sip_path)
 
         self.mark_finished()

@@ -20,8 +20,6 @@ from qgis_mobility.generator.builder import Builder
 import distutils.dir_util
 import os
 
-from qgis_mobility.generator.libiconv_builder import LibiconvBuilder
-from qgis_mobility.generator.freexl_builder import FreeXLBuilder
 from qgis_mobility.generator.sqlite_builder import SQLiteBuilder
 from qgis_mobility.generator.geos_builder import GeosBuilder
 from qgis_mobility.generator.proj4_builder import Proj4Builder
@@ -66,6 +64,7 @@ class SpatialiteBuilder(Builder):
               os.makedirs(working_dir + '/m4')
         self.fix_config_sub_and_guess()
         self.sed_ir('s/(\-version\-info 4\:0\:2)/\-avoid\-version/g', 'src/Makefile.am')
+        self.sed_ir('s/#include <freexl.h>//', 'src/shapefiles/shapefiles.c')
         self.run_autoreconf()
         self.sed_i("s/@MINGW_FALSE@am__append_1 = -lpthread -ldl/@MINGW_FALSE@am_append_1 = -ldl/", 
                    'src/Makefile.in')

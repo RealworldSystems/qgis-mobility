@@ -149,7 +149,7 @@ def run(cache_path):
     epilog=textwrap.dedent('''\
     The action should be any of the following
     ''')
-    epilog += "  - purgecache\n  - distclean\n  - "
+    epilog += "  - "
     epilog += "\n  - ".join(sorted(__workout_targets(recipe).keys()))
     
     describe = textwrap.dedent('''\

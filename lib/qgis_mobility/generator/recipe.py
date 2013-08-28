@@ -17,16 +17,12 @@
 #
 
 from qgis_mobility.generator.standalone_toolchain import StandaloneToolchain
-from qgis_mobility.generator.bzip2_builder import BZip2Builder
-from qgis_mobility.generator.libiconv_builder import LibiconvBuilder
-from qgis_mobility.generator.freexl_builder import FreeXLBuilder
 from qgis_mobility.generator.sqlite_builder import SQLiteBuilder
 from qgis_mobility.generator.geos_builder import GeosBuilder
 from qgis_mobility.generator.proj4_builder import Proj4Builder
 from qgis_mobility.generator.spatialite_builder import SpatialiteBuilder
 from qgis_mobility.generator.expat_builder import ExpatBuilder
 from qgis_mobility.generator.gdal_builder import GDALBuilder
-from qgis_mobility.generator.gsl_builder import GSLBuilder
 from qgis_mobility.generator.qwt_builder import QWTBuilder
 from qgis_mobility.generator.spatialindex_builder import SpatialindexBuilder
 from qgis_mobility.generator.python_builder import PythonBuilder
@@ -44,16 +40,12 @@ from collections import namedtuple
 
 __dependency_class_chain = [
         StandaloneToolchain,
-        BZip2Builder,
-        LibiconvBuilder,
-        FreeXLBuilder,
         SQLiteBuilder,
         GeosBuilder,
         Proj4Builder,
         SpatialiteBuilder,
         ExpatBuilder,
         GDALBuilder,
-        GSLBuilder,
         QWTBuilder,
         SpatialindexBuilder,
         PythonBuilder,
