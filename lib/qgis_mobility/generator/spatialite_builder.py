@@ -39,8 +39,7 @@ class SpatialiteBuilder(Builder):
 
     def get_default_flags(self):
         """ Returns the default flags salted with dependencies """
-        flags = LibiconvBuilder(self.get_recon()).salt_flags(Builder.get_default_flags(self))
-        flags = SQLiteBuilder(self.get_recon()).salt_flags(flags)
+        flags = SQLiteBuilder(self.get_recon()).salt_flags(Builder.get_default_flags(self))
         flags = GeosBuilder(self.get_recon()).salt_flags(flags)
         flags = Proj4Builder(self.get_recon()).salt_flags(flags)
         flags = FreeXLBuilder(self.get_recon()).salt_flags(flags)

@@ -167,8 +167,6 @@ class QGisBuilder(Builder):
                       'PROJ_INCLUDE_DIR'     : Proj4Builder(recon).get_include_path(),
                       'PROJ_LIBRARY'         : os.path.join(Proj4Builder(recon).get_build_path(),
                                                             'lib', 'libproj.so'),
-                      'CHARSET_LIBRARY'      : os.path.join(LibiconvBuilder(recon).get_build_path(),
-                                                            'lib', 'libcharset.so'),
                       'QWT_INCLUDE_DIR'      : QWTBuilder(recon).get_include_path(),
                       'QWT_LIBRARY'          : os.path.join(QWTBuilder(recon).get_build_path(),
                                                             'libs', 'armeabi', 'libqwt.a'),
