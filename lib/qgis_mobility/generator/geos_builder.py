@@ -28,7 +28,7 @@ class GeosBuilder(Builder):
         return 'geos-3.2.3'
     
     def human_name(self):
-        """ Returns the human readable name of the FreeXLBuilder """
+        """ Returns the human readable name of the GeosBuilder """
         return 'Geos Build Process'
 
     def sixty_four(self):

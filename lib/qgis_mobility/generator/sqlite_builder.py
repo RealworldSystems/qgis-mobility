@@ -28,7 +28,7 @@ class SQLiteBuilder(Builder):
         return 'sqlite-autoconf-3070400'
     
     def human_name(self):
-        """ Returns the human readable name of the FreeXLBuilder """
+        """ Returns the human readable name of the GeosBuilder """
         return 'SQLite Build Process'
 
     def salt_flags(self, flags):
