@@ -24,6 +24,7 @@ import argparse
 import textwrap
 import inspect
 import re
+import inspect
 
 def _current_necessitas(): 
     return qgis_mobility.generator.current_necessitas()
@@ -128,6 +129,17 @@ def __workout_targets(receiver, prefix="", start={}):
     
     return start
 
+def __workout_help_names(receiver):
+    targets = __workout_targets(receiver)
+    result = list()
+    for target_name in targets.keys():
+        receiver, attr = targets[target_name]
+        args = inspect.getargspec(attr).args[1:]
+        intermediary = [target_name]
+        intermediary.extend(map(lambda s: '<' + s.upper() + '>', args))
+        result.append(" ".join(intermediary))
+    return result
+
 def __parsecommand(expression, parameters, recipe):
     """
     Parses the command range as given in expression
@@ -150,7 +162,7 @@ def run(cache_path):
     The action should be any of the following
     ''')
     epilog += "  - "
-    epilog += "\n  - ".join(sorted(__workout_targets(recipe).keys()))
+    epilog += "\n  - ".join(sorted(__workout_help_names(recipe)))
     
     describe = textwrap.dedent('''\
     script arguments:

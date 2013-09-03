@@ -32,6 +32,7 @@ from qgis_mobility.generator.pyqt_builder import PyQtBuilder
 from qgis_mobility.generator.pyqtmobility_builder import PyQtMobilityBuilder
 from qgis_mobility.generator.runtime_builder import RuntimeBuilder
 from qgis_mobility.generator.creator import Creator
+from qgis_mobility.generator.download import Download
 
 import sys
 import os
@@ -161,6 +162,7 @@ class Recipe(object):
                                     all_values()))
         self.all = Recipe._All(self.recipe)
         self.creator = Creator(recon)
+        self.download = Download(recon)
         self.__recon = recon
     
     def distclean(self):
