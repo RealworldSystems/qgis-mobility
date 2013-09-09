@@ -41,7 +41,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.kde.necessitas.example.QGisMobility.R;
+import @R@;
+
 import org.kde.necessitas.ministro.IMinistro;
 import org.kde.necessitas.ministro.IMinistroCallback;
 

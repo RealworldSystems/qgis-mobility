@@ -210,8 +210,9 @@ class Creator(object):
         if os.path.exists(app_zip): os.remove(app_zip)
         zf = ZipFile(app_zip, "w")
         for filename in self.__gather_files_to_pack(self.working_folder):
-            print("Storing {0}".format(filename))
-            zf.write(filename, filename[len(self.working_folder):])
+            name = filename[len(self.working_folder):]
+            print("Storing {0}\n    --> [{2}] {1}".format(filename, name, app_zip))
+            zf.write(filename, name)
         zf.writestr('timestamp', str(time.time()))
         zf.close()
 
@@ -388,7 +389,21 @@ class Creator(object):
             if child.attrib['name'] == 'app_name':
                 child.text = self.host_config.name()
         et.write(os.path.join(android_out, 'res', 'values', 'strings.xml'),  'utf-8', True)
+
+        # @R@ needs to be replaced with self.host_config.package_name.QGisMobility.R
+        qt_activity_file_name = os.path.join(android_out, 'src', 'org', 'kde',
+                                             'necessitas', 'origo', 'QtActivity.java')
         
+        args = ['sed']
+        args.extend(['-i', 
+                     "s/@R@/%s.R/" % self.host_config.package_name(),
+                     qt_activity_file_name])
+        process = Popen(args)
+        process.communicate(None)
+        if not process.returncode == 0:
+            raise ValueError("Failed Process: " + args[0])
+        print "Sed finished with:", path
+
         
     def __run_ant(self, command):
         outdir = self.__check_out_dir(self.working_folder)
@@ -406,10 +421,12 @@ class Creator(object):
         self.pack_python(path)
         self.android(path)
         outdir = self.__check_out_dir(self.working_folder)
+        rawdir = os.path.join(outdir, 'android', 'res', 'raw')
         
         for zipfile in ['application.zip', 'resources.zip', 'python_27.zip', 'qgsmsystem.zip']:
+            if not os.path.exists(rawdir): os.makedirs(rawdir)
             shutil.copyfile(os.path.join(outdir, zipfile),
-                            os.path.join(outdir, 'android', 'res', 'raw', zipfile))
+                            os.path.join(rawdir, zipfile))
             
         build_path = lambda builder: builder(self._recon).build_path
 

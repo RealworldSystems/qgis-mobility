@@ -85,6 +85,7 @@ scan_for dirname
 scan_for cmake
 scan_for svn "Subversion"
 scan_for qmake "Qt 4 - qt4-qmake"
+scan_for ant "Apache Ant"
 
 # Clean two newlines
 echo
