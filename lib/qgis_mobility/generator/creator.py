@@ -437,7 +437,6 @@ class Creator(object):
             os.path.join(build_path(GDALBuilder), 'lib', 'libgdal.so'),
             os.path.join(build_path(Proj4Builder), 'lib', 'libproj.so'),
             os.path.join(build_path(QGisBuilder), 'lib', 'libqgis_core.so'),
-            os.path.join(build_path(QGisBuilder), 'lib', 'libqgis_gui.so'),
             os.path.join(build_path(QGisBuilder), 'lib', 'libqgispython.so'),
             os.path.join(build_path(QGisBuilder), 'lib', 'libspatialiteprovider.so'),
             os.path.join(build_path(RuntimeBuilder), 'lib', 'libqgismobility.so'),

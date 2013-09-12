@@ -106,6 +106,19 @@ class QGisBuilder(Builder):
         self.unpack(output)
         self.push_current_source_path(os.path.join(self.get_source_path(), self.library_name()))
         
+        self.patch("core_mimic.patch", strip=1)
+        self.patch("core_replace.patch", strip=1)
+        self.patch("mssql_provider.patch", strip=1)
+        self.patch("postgres_provider.patch", strip=1)
+        self.patch("spatialite_provider.patch", strip=1)
+        self.patch("wfs_provider.patch", strip=1)
+        self.patch("wms_provider.patch", strip=1)
+        self.patch("plugins_qgis_gui.patch", strip=1)
+        self.patch("app.patch", strip=1)
+        self.patch("gui_tests.patch", strip=1)
+        self.patch("gui_python.patch", strip=1)
+        self.patch("gui_doc.patch", strip=1)
+
         recon = self.get_recon()
 
         # QGis uses (as only library in this whole project) cmake. We need to set up a number
