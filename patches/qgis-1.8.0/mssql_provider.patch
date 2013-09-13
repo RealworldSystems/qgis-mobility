@@ -1,0 +1,19 @@
+*** a/src/providers/mssql/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- a/src/providers/mssql/CMakeLists.txt	Thu Sep 12 18:34:16 2013
+***************
+*** 23,29 ****
+  
+  TARGET_LINK_LIBRARIES(mssqlprovider
+    qgis_core
+!   qgis_gui
+    ${QT_QTSQL_LIBRARY}
+  )
+  ########################################################
+--- 23,29 ----
+  
+  TARGET_LINK_LIBRARIES(mssqlprovider
+    qgis_core
+! #  qgis_gui
+    ${QT_QTSQL_LIBRARY}
+  )
+  ########################################################

@@ -1,0 +1,19 @@
+*** a/src/providers/postgres/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- a/src/providers/postgres/CMakeLists.txt	Thu Sep 12 18:34:26 2013
+***************
+*** 41,47 ****
+  TARGET_LINK_LIBRARIES (postgresprovider
+    ${POSTGRES_LIBRARY}
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 41,47 ----
+  TARGET_LINK_LIBRARIES (postgresprovider
+    ${POSTGRES_LIBRARY}
+    qgis_core
+! #  qgis_gui
+  )
+  
+  

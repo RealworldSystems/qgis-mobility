@@ -1,0 +1,19 @@
+*** a/src/app/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/app/CMakeLists.txt	Thu Sep 12 22:05:21 2013
+***************
+*** 445,451 ****
+    ${QWTPOLAR_LIBRARY}
+    ${GDAL_LIBRARY}
+    qgis_core
+!   qgis_gui
+    qgis_analysis
+  )
+  
+--- 445,451 ----
+    ${QWTPOLAR_LIBRARY}
+    ${GDAL_LIBRARY}
+    qgis_core
+!   #qgis_gui
+    qgis_analysis
+  )
+  

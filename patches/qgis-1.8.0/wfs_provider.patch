@@ -1,0 +1,19 @@
+*** a/src/providers/wfs/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/providers/wfs/CMakeLists.txt	Thu Sep 12 18:34:44 2013
+***************
+*** 44,50 ****
+  TARGET_LINK_LIBRARIES (wfsprovider
+    ${EXPAT_LIBRARY}
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 44,50 ----
+  TARGET_LINK_LIBRARIES (wfsprovider
+    ${EXPAT_LIBRARY}
+    qgis_core
+! #  qgis_gui
+  )
+  
+  

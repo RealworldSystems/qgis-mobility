@@ -1,0 +1,648 @@
+*** a/src/gui/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/gui/CMakeLists.txt	Thu Sep 12 21:29:53 2013
+***************
+*** 1,3 ****
+--- 1,453 ----
++ #############################################################
++ # sources
++ 
++ SET(QGIS_CORE_SRCS
++ 
++   ../core/gps/qextserialport/qextserialport.cpp
++   ../core/gps/qextserialport/qextserialenumerator.cpp
++ 
++   ../core/gps/qgsgpsconnection.cpp
++   ../core/gps/qgsgpsconnectionregistry.cpp
++   ../core/gps/qgsnmeaconnection.cpp
++   ../core/gps/qgsgpsdconnection.cpp
++   ../core/gps/qgsgpsdetector.cpp
++   ../core/gps/parse.c
++   ../core/gps/sentence.c
++   ../core/gps/info.c
++   ../core/gps/time.c
++   ../core/gps/gmath.c
++   ../core/gps/tok.c
++   ../core/gps/context.c
++ 
++   ../core/symbology-ng/qgssymbolv2.cpp
++   ../core/symbology-ng/qgssymbollayerv2.cpp
++   ../core/symbology-ng/qgssymbollayerv2registry.cpp
++   ../core/symbology-ng/qgssymbollayerv2utils.cpp
++   ../core/symbology-ng/qgslinesymbollayerv2.cpp
++   ../core/symbology-ng/qgsmarkersymbollayerv2.cpp
++   ../core/symbology-ng/qgsfillsymbollayerv2.cpp
++   ../core/symbology-ng/qgsrendererv2.cpp
++   ../core/symbology-ng/qgsrendererv2registry.cpp
++   ../core/symbology-ng/qgssinglesymbolrendererv2.cpp
++   ../core/symbology-ng/qgscategorizedsymbolrendererv2.cpp
++   ../core/symbology-ng/qgsgraduatedsymbolrendererv2.cpp
++   ../core/symbology-ng/qgsrulebasedrendererv2.cpp
++   ../core/symbology-ng/qgsvectorcolorrampv2.cpp
++   ../core/symbology-ng/qgsstylev2.cpp
++   ../core/symbology-ng/qgssymbologyv2conversion.cpp
++   ../core/symbology-ng/qgssvgcache.cpp
++   ../core/symbology-ng/qgsellipsesymbollayerv2.cpp
++   ../core/symbology-ng/qgspointdisplacementrenderer.cpp
++   ../core/symbology-ng/qgsvectorfieldsymbollayer.cpp
++ 
++   ../core/qgis.cpp
++   ../core/qgsapplication.cpp
++   ../core/qgsattributeaction.cpp
++   ../core/qgsbrowsermodel.cpp
++   ../core/qgscentralpointpositionmanager.cpp
++   ../core/qgsclipper.cpp
++   ../core/qgscontexthelp.cpp
++   ../core/qgscoordinatetransform.cpp
++   ../core/qgscrscache.cpp
++   ../core/qgsdatasourceuri.cpp
++   ../core/qgsdataitem.cpp
++   ../core/qgsdbfilterproxymodel.cpp
++   ../core/qgsdiagram.cpp
++   ../core/qgsdiagramrendererv2.cpp
++   ../core/qgsdistancearea.cpp
++   ../core/qgsexpression.cpp
++   ../core/qgsfeature.cpp
++   ../core/qgsfield.cpp
++   ../core/qgsgeometry.cpp
++   ../core/qgsgeometryvalidator.cpp
++   ../core/qgshttptransaction.cpp
++   ../core/qgslabel.cpp
++   ../core/qgslabelattributes.cpp
++   ../core/qgslabelsearchtree.cpp
++   ../core/qgslogger.cpp
++   ../core/qgsmaplayer.cpp
++   ../core/qgsmaplayerregistry.cpp
++   ../core/qgsmaprenderer.cpp
++   ../core/qgsmaptopixel.cpp
++   ../core/qgsmessageoutput.cpp
++   ../core/qgsmimedatautils.cpp
++   ../core/qgsmessagelog.cpp
++   ../core/qgscredentials.cpp
++   ../core/qgsoverlayobject.cpp
++   ../core/qgspalgeometry.cpp
++   ../core/qgspallabeling.cpp
++   ../core/qgspalobjectpositionmanager.cpp
++   ../core/qgspluginlayer.cpp
++   ../core/qgspluginlayerregistry.cpp
++   ../core/qgspoint.cpp
++   ../core/qgsproject.cpp
++   ../core/qgsprojectfiletransform.cpp
++   ../core/qgsprojectversion.cpp
++   ../core/qgsprojectproperty.cpp
++   ../core/qgsprovidercountcalcevent.cpp
++   ../core/qgsproviderextentcalcevent.cpp
++   ../core/qgsprovidermetadata.cpp
++   ../core/qgsproviderregistry.cpp
++   ../core/qgspythonrunner.cpp
++   ../core/qgsrasterprojector.cpp
++   ../core/qgsrasterdataprovider.cpp
++   ../core/qgsrendercontext.cpp
++   ../core/qgsrectangle.cpp
++   ../core/qgsrunprocess.cpp
++   ../core/qgsscalecalculator.cpp
++   ../core/qgssearchstring.cpp
++   ../core/qgssearchtreenode.cpp
++   ../core/qgssnapper.cpp
++   ../core/qgscoordinatereferencesystem.cpp
++   ../core/qgstolerance.cpp
++   ../core/qgsvectordataprovider.cpp
++   ../core/qgsvectorfilewriter.cpp
++   ../core/qgsvectorlayer.cpp
++   ../core/qgsvectorlayerimport.cpp
++   ../core/qgsvectorlayerjoinbuffer.cpp
++   ../core/qgsvectorlayerundocommand.cpp
++   ../core/qgsvectoroverlay.cpp
++ 
++   ../core/qgsnetworkaccessmanager.cpp
++ 
++   ../core/composer/qgsaddremoveitemcommand.cpp
++   ../core/composer/qgscomposerarrow.cpp
++   ../core/composer/qgscomposeritem.cpp
++   ../core/composer/qgscomposeritemcommand.cpp
++   ../core/composer/qgscomposeritemgroup.cpp
++   ../core/composer/qgscomposerlabel.cpp
++   ../core/composer/qgscomposerlegenditem.cpp
++   ../core/composer/qgscomposerpicture.cpp
++   ../core/composer/qgscomposermap.cpp
++   ../core/composer/qgscomposertable.cpp
++   ../core/composer/qgscomposerattributetable.cpp
++   ../core/composer/qgscomposertexttable.cpp
++   ../core/composer/qgscomposerscalebar.cpp
++   ../core/composer/qgscomposershape.cpp
++   ../core/composer/qgslegendmodel.cpp
++   ../core/composer/qgscomposerlegend.cpp
++   ../core/composer/qgspaperitem.cpp
++   ../core/composer/qgsscalebarstyle.cpp
++   ../core/composer/qgsdoubleboxscalebarstyle.cpp
++   ../core/composer/qgsnumericscalebarstyle.cpp
++   ../core/composer/qgssingleboxscalebarstyle.cpp
++   ../core/composer/qgsticksscalebarstyle.cpp
++   ../core/composer/qgscomposition.cpp
++ 
++   ../core/pal/costcalculator.cpp
++   ../core/pal/feature.cpp
++   ../core/pal/geomfunction.cpp
++   ../core/pal/labelposition.cpp
++   ../core/pal/layer.cpp
++   ../core/pal/pal.cpp
++   ../core/pal/palstat.cpp
++   ../core/pal/pointset.cpp
++   ../core/pal/priorityqueue.cpp
++   ../core/pal/problem.cpp
++   ../core/pal/util.cpp
++   ../core/pal/linkedlist.hpp
++   ../core/pal/hashtable.hpp
++   ../core/pal/rtree.hpp
++ 
++   ../core/raster/qgscliptominmaxenhancement.cpp
++   ../core/raster/qgscolorrampshader.cpp
++   ../core/raster/qgscontrastenhancement.cpp
++   ../core/raster/qgscontrastenhancementfunction.cpp
++   ../core/raster/qgsfreakoutshader.cpp
++   ../core/raster/qgslinearminmaxenhancement.cpp
++   ../core/raster/qgslinearminmaxenhancementwithclip.cpp
++   ../core/raster/qgspseudocolorshader.cpp
++   ../core/raster/qgsrasterlayer.cpp
++   ../core/raster/qgsrastertransparency.cpp
++   ../core/raster/qgsrastershader.cpp
++   ../core/raster/qgsrastershaderfunction.cpp
++ 
++   ../core/renderer/qgscontinuouscolorrenderer.cpp
++   ../core/renderer/qgsgraduatedsymbolrenderer.cpp
++   ../core/renderer/qgsrenderer.cpp
++   ../core/renderer/qgssinglesymbolrenderer.cpp
++   ../core/renderer/qgsuniquevaluerenderer.cpp
++ 
++   ../core/symbology/qgsmarkercatalogue.cpp
++   ../core/symbology/qgssymbol.cpp
++   ../core/symbology/qgssymbologyutils.cpp
++ 
++   ../core/qgsspatialindex.cpp
++ )
++ 
++ IF(WIN32)
++   SET(QGIS_CORE_SRCS
++     ${QGIS_CORE_SRCS}
++     ../core/gps/qextserialport/win_qextserialport.cpp
++   )
++   ADD_DEFINITIONS(-D_TTY_WIN_)
++ ELSE(WIN32)
++   SET(QGIS_CORE_SRCS
++     ${QGIS_CORE_SRCS}
++     ../core/gps/qextserialport/posix_qextserialport.cpp
++   )
++   ADD_DEFINITIONS(-D_TTY_POSIX_)
++ ENDIF(WIN32)
++ 
++ IF (QT_MOBILITY_LOCATION_FOUND)
++   SET(QGIS_CORE_SRCS
++     ${QGIS_CORE_SRCS}
++     ../core/gps/qgsqtlocationconnection.cpp
++   )
++ ENDIF (QT_MOBILITY_LOCATION_FOUND)
++ 
++ IF (WITH_INTERNAL_SPATIALITE)
++   IF (WIN32 OR APPLE OR ANDROID)
++     INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
++   ENDIF (WIN32 OR APPLE OR ANDROID)
++   IF (WIN32)
++     ADD_DEFINITIONS(-DDLL_EXPORT)
++   ENDIF (WIN32)
++ 
++ #
++ # sqlite3 requires some extraflags to be defined
++ # in order to support:
++ # - huge database > 2 GB
++ # - RTree Spatial Index
++ #
++   ADD_DEFINITIONS(-D_LARGE_FILE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE=1)
++   ADD_DEFINITIONS(-DSQLITE_ENABLE_RTREE=1)
++ 
++   SET(QGIS_CORE_SRCS
++     ${QGIS_CORE_SRCS}
++     ../core/spatialite/sqlite3.c
++     ../core/spatialite/spatialite.c
++     )
++ 
++   IF(MSVC)
++     # dirty code
++     SET_SOURCE_FILES_PROPERTIES(../core/spatialite/sqlite3.c ../core/spatialite/spatialite.c PROPERTIES COMPILE_FLAGS /W0)
++   ELSE(MSVC)
++     SET_SOURCE_FILES_PROPERTIES(../core/spatialite/sqlite3.c ../core/spatialite/spatialite.c PROPERTIES COMPILE_FLAGS -w)
++   ENDIF(MSVC)
++ 
++   INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
++ ENDIF (WITH_INTERNAL_SPATIALITE)
++ 
++ ADD_FLEX_FILES(QGIS_CORE_SRCS ../core/qgssearchstringlexer.ll ../core/qgsexpressionlexer.ll)
++ 
++ ADD_BISON_FILES(QGIS_CORE_SRCS ../core/qgssearchstringparser.yy ../core/qgsexpressionparser.yy)
++ 
++ SET(QGIS_CORE_MOC_HDRS
++   ../core/qgsapplication.h
++   ../core/qgsbrowsermodel.h
++   ../core/qgscontexthelp.h
++   ../core/qgscoordinatetransform.h
++   ../core/qgsdataitem.h
++   ../core/qgsdataprovider.h
++   ../core/qgshttptransaction.h
++   ../core/qgsmaplayer.h
++   ../core/qgsmaplayerregistry.h
++   ../core/qgsmaprenderer.h
++   ../core/qgsmessageoutput.h
++   ../core/qgsmessagelog.h
++   ../core/qgscredentials.h
++   ../core/qgspluginlayer.h
++   ../core/qgsproject.h
++   ../core/qgsrunprocess.h
++   ../core/qgsvectorlayer.h
++   ../core/qgsrasterdataprovider.h
++   ../core/qgsnetworkaccessmanager.h
++   ../core/qgsvectordataprovider.h
++   ../core/qgsgeometryvalidator.h
++ 
++   ../core/composer/qgsaddremoveitemcommand.h
++   ../core/composer/qgscomposerlegend.h
++   ../core/composer/qgscomposermap.h
++   ../core/composer/qgscomposerpicture.h
++   ../core/composer/qgscomposerscalebar.h
++   ../core/composer/qgscomposeritem.h
++   ../core/composer/qgscomposeritemgroup.h
++   ../core/composer/qgscomposershape.h
++   ../core/composer/qgscomposerattributetable.h
++   ../core/composer/qgscomposition.h
++ 
++   ../core/composer/qgslegendmodel.h
++   ../core/symbology/qgsmarkercatalogue.h
++   ../core/raster/qgsrasterlayer.h
++ 
++   ../core/gps/qgsgpsconnection.h
++   ../core/gps/qgsgpsdetector.h
++   ../core/gps/qgsnmeaconnection.h
++   ../core/gps/qgsgpsdconnection.h
++   ../core/gps/qextserialport/qextserialport.h
++   ../core/gps/qextserialport/qextserialenumerator.h
++ )
++ 
++ 
++ IF (QT_MOBILITY_LOCATION_FOUND)
++   SET(QGIS_CORE_MOC_HDRS
++     ${QGIS_CORE_MOC_HDRS}
++     ../core/gps/qgsqtlocationconnection.h
++   )
++ ENDIF (QT_MOBILITY_LOCATION_FOUND)
++ 
++ QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
++ 
++ # install headers
++ # install qgsconfig.h and plugin.h here so they can get into
++ # the OS X framework target
++ 
++ SET(QGIS_CORE_HDRS
++   ${CMAKE_BINARY_DIR}/qgsconfig.h
++   ../core/../plugins/qgisplugin.h
++   ../core/../plugins/qgsrendererplugin.h
++   ../core/qgis.h
++   ../core/qgsapplication.h
++   ../core/qgsattributeaction.h
++   ../core/qgscentralpointpositionmanager.h
++   ../core/qgsclipper.h
++   ../core/qgscontexthelp.h
++   ../core/qgscoordinatetransform.h
++   ../core/qgsdatasourceuri.h
++   ../core/qgsdataitem.h
++   ../core/qgsdistancearea.h
++   ../core/qgscsexception.h
++   ../core/qgsexception.h
++   ../core/qgsexpression.h
++   ../core/qgsfeature.h
++   ../core/qgsfield.h
++   ../core/qgsgeometry.h
++   ../core/qgshttptransaction.h
++   ../core/qgslabel.h
++   ../core/qgslabelattributes.h
++   ../core/qgslogger.h
++   ../core/qgsmaplayer.h
++   ../core/qgsmaplayerregistry.h
++   ../core/qgsmaprenderer.h
++   ../core/qgsmaptopixel.h
++   ../core/qgsmessageoutput.h
++   ../core/qgsmimedatautils.h
++   ../core/qgscredentials.h
++   ../core/qgsoverlayobjectpositionmanager.h
++   ../core/qgspallabeling.h
++   ../core/qgspalobjectpositionmanager.h
++   ../core/qgspluginlayer.h
++   ../core/qgspluginlayerregistry.h
++   ../core/qgspoint.h
++   ../core/qgsproject.h
++   ../core/qgsprojectfiletransform.h
++   ../core/qgsprojectproperty.h
++   ../core/qgsprojectversion.h
++   ../core/qgsprovidercountcalcevent.h
++   ../core/qgsproviderextentcalcevent.h
++   ../core/qgsprovidermetadata.h
++   ../core/qgsproviderregistry.h
++   ../core/qgspythonrunner.h
++   ../core/qgsrasterprojector.h
++   ../core/qgsrasterdataprovider.h
++   ../core/qgsrectangle.h
++   ../core/qgsrendercontext.h
++   ../core/qgsrunprocess.h
++   ../core/qgsscalecalculator.h
++   ../core/qgssearchstring.h
++   ../core/qgssearchtreenode.h
++   ../core/qgssnapper.h
++   ../core/qgscoordinatereferencesystem.h
++   ../core/qgsvectordataprovider.h
++   ../core/qgsvectorfilewriter.h
++   ../core/qgsvectorlayer.h
++   ../core/qgsvectorlayerimport.h
++   ../core/qgsvectoroverlay.h
++   ../core/qgstolerance.h
++ 
++   ../core/composer/qgslegendmodel.h
++   ../core/composer/qgscomposerlegenditem.h
++ 
++   ../core/raster/qgscliptominmaxenhancement.h
++   ../core/raster/qgscolorrampshader.h
++   ../core/raster/qgscolorrampshader.h
++   ../core/raster/qgscontrastenhancement.h
++   ../core/raster/qgscontrastenhancementfunction.h
++   ../core/raster/qgsfreakoutshader.h
++   ../core/raster/qgslinearminmaxenhancement.h
++   ../core/raster/qgslinearminmaxenhancementwithclip.h
++   ../core/raster/qgspseudocolorshader.h
++   ../core/raster/qgsrasterpyramid.h
++   ../core/raster/qgsrasterbandstats.h
++   ../core/raster/qgsrasterlayer.h
++   ../core/raster/qgsrastertransparency.h
++   ../core/raster/qgsrastershader.h
++   ../core/raster/qgsrastershaderfunction.h
++   ../core/raster/qgsrasterviewport.h
++ 
++   ../core/renderer/qgscontinuouscolorrenderer.h
++   ../core/renderer/qgsgraduatedsymbolrenderer.h
++   ../core/renderer/qgsrenderer.h
++   ../core/renderer/qgssinglesymbolrenderer.h
++   ../core/renderer/qgsuniquevaluerenderer.h
++ 
++   ../core/symbology/qgsmarkercatalogue.h
++   ../core/symbology/qgssymbol.h
++   ../core/symbology/qgssymbologyutils.h
++ 
++   ../core/symbology-ng/qgscategorizedsymbolrendererv2.h
++   ../core/symbology-ng/qgscolorbrewerpalette.h
++   ../core/symbology-ng/qgsfillsymbollayerv2.h
++   ../core/symbology-ng/qgsgraduatedsymbolrendererv2.h
++   ../core/symbology-ng/qgslinesymbollayerv2.h
++   ../core/symbology-ng/qgsmarkersymbollayerv2.h
++   ../core/symbology-ng/qgsrendererv2.h
++   ../core/symbology-ng/qgsrendererv2registry.h
++   ../core/symbology-ng/qgssinglesymbolrendererv2.h
++   ../core/symbology-ng/qgsstylev2.h
++   ../core/symbology-ng/qgssymbollayerv2.h
++   ../core/symbology-ng/qgssymbollayerv2registry.h
++   ../core/symbology-ng/qgssymbollayerv2utils.h
++   ../core/symbology-ng/qgssymbologyv2conversion.h
++   ../core/symbology-ng/qgssymbolv2.h
++   ../core/symbology-ng/qgsvectorcolorrampv2.h
++   ../core/qgsdiagramrendererv2.h
++ 
++   ../core/qgsspatialindex.h
++ )
++ 
++ IF (QT_MOBILITY_LOCATION_FOUND)
++   SET(QGIS_CORE_HDRS
++     ${QGIS_CORE_HDRS}
++     ../core/gps/qgsqtlocationconnection.h
++   )
++ ENDIF (QT_MOBILITY_LOCATION_FOUND)
++ 
++ INCLUDE_DIRECTORIES(
++   ${CMAKE_CURRENT_SOURCE_DIR}
++   ../core/composer
++   ../core/pal
++   ../core/raster
++   ../core/renderer
++   ../core/symbology
++   ../core/symbology-ng
++   ../core/gps/qextserialport
++   ${SPATIALINDEX_INCLUDE_DIR}
++   ${PROJ_INCLUDE_DIR}
++   ${GEOS_INCLUDE_DIR}
++   ${GDAL_INCLUDE_DIR}
++ )
++ 
++ IF (NOT WITH_INTERNAL_SPATIALITE)
++   INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
++ ENDIF (NOT WITH_INTERNAL_SPATIALITE)
++ 
++ IF (WIN32)
++   IF (MSVC)
++     ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllexport)")
++   ELSE (MSVC)
++     ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllexport)\"")
++   ENDIF (MSVC)
++ ENDIF (WIN32)
++ 
++ #for PAL classes
++ IF (WIN32)
++     ADD_DEFINITIONS("-D_HAVE_WINDOWS_H_")
++ ELSE (WIN32)
++     ADD_DEFINITIONS("-D_HAVE_PTHREAD_")
++ ENDIF (WIN32)
++ 
+  
+  SET(QGIS_GUI_SRCS
+  
+***************
+*** 270,325 ****
+  ENDIF(MSVC)
+  
+  #############################################################
+! # qgis_gui library
+  
+! ADD_LIBRARY(qgis_gui SHARED
+!      ${QGIS_GUI_SRCS} ${QGIS_GUI_MOC_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS}
+!      #${MODELTEST_SRCS} ${MODELTEST_MOC_SRCS}  # for ModelTest
+! )
+  
+! SET_TARGET_PROPERTIES(qgis_gui PROPERTIES
+!   PUBLIC_HEADER "${QGIS_GUI_HDRS};${QGIS_GUI_MOC_HDRS}"
+    CLEAN_DIRECT_OUTPUT 1
+    FRAMEWORK 1
+    FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
+    MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
+    MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
+!   MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis_gui)
+  
+  #generate unversioned libs for android
+  IF (NOT ANDROID)
+!   SET_TARGET_PROPERTIES(qgis_gui PROPERTIES
+      VERSION ${COMPLETE_VERSION}
+      SOVERSION ${COMPLETE_VERSION}
+      )
+  ENDIF (NOT ANDROID)
+  
+  # make sure that UI files will be processed first
+! ADD_DEPENDENCIES(qgis_gui ui)
+  
+! TARGET_LINK_LIBRARIES(qgis_gui
+!   qgis_core
+!   ${QT_QTUITOOLS_LIBRARY}
+!   #${QT_QTTEST_LIBRARY}  # for ModelTest
+  )
+  
+! IF (NOT WITH_INTERNAL_SPATIALITE)
+!   TARGET_LINK_LIBRARIES(qgis_gui ${SQLITE3_LIBRARIES})
+! ENDIF (NOT WITH_INTERNAL_SPATIALITE)
+  
+  IF (APPLE)
+!   SET_TARGET_PROPERTIES(qgis_gui PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+  ENDIF (APPLE)
+  
+  # install
+  
+! INSTALL(TARGETS qgis_gui
+    RUNTIME DESTINATION ${QGIS_BIN_DIR}
+    LIBRARY DESTINATION ${QGIS_LIB_DIR}
+    ARCHIVE DESTINATION ${QGIS_LIB_DIR}
+    FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
+    PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
+  
+  # ui headers to install, don't exist at target definition time, install manually
+  IF (APPLE)
+    INSTALL(FILES ${QGIS_GUI_UI_HDRS} DESTINATION ${QGIS_FW_SUBDIR}/qgis_gui.framework/Headers)
+--- 720,828 ----
+  ENDIF(MSVC)
+  
+  #############################################################
+! # qgis_core library
+  
+! ADD_LIBRARY(qgis_core SHARED ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} ${QGIS_GUI_SRCS} ${QGIS_GUI_MOC_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS})
+! 
+! 
+  
+! SET_TARGET_PROPERTIES(qgis_core PROPERTIES
+!   PUBLIC_HEADER "${QGIS_CORE_HDRS};${QGIS_CORE_MOC_HDRS};${QGIS_GUI_HDRS};${QGIS_GUI_MOC_HDRS}"
+    CLEAN_DIRECT_OUTPUT 1
+    FRAMEWORK 1
+    FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
+    MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
+    MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
+!   MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis_core)
+  
+  #generate unversioned libs for android
+  IF (NOT ANDROID)
+!   SET_TARGET_PROPERTIES(qgis_core PROPERTIES
+      VERSION ${COMPLETE_VERSION}
+      SOVERSION ${COMPLETE_VERSION}
+      )
+  ENDIF (NOT ANDROID)
+  
++ # make sure to create qgsversion.h before compiling
++ ADD_DEPENDENCIES(qgis_core version)
++ 
++ # make sure to create qgsversion.h before compiling
++ ADD_DEPENDENCIES(qgis_core qgis_base)
++ 
+  # make sure that UI files will be processed first
+! ADD_DEPENDENCIES(qgis_core ui)
+  
+! # because of htonl
+! IF (WIN32)
+!   FIND_LIBRARY(SETUPAPI_LIBRARY NAMES setupapi PATHS $ENV{LIB})
+!   TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY})
+! ENDIF (WIN32)
+! 
+! IF(APPLE)
+!   TARGET_LINK_LIBRARIES(qgis_core "-framework CoreFoundation -framework IOKit")
+! ENDIF(APPLE)
+! 
+! IF (QT_MOBILITY_LOCATION_FOUND)
+!     TARGET_LINK_LIBRARIES(qgis_core ${QT_MOBILITY_LOCATION_LIBRARY})
+! ENDIF (QT_MOBILITY_LOCATION_FOUND)
+! 
+! TARGET_LINK_LIBRARIES(qgis_core
+!   ${QT_QTMAIN_LIBRARY}
+!   ${QT_QTXML_LIBRARY}
+!   ${QT_QTCORE_LIBRARY}
+!   ${QT_QTGUI_LIBRARY}
+!   ${QT_QTNETWORK_LIBRARY}
+!   ${QT_QTSVG_LIBRARY}
+!   ${QT_QTUITOOLS_LIBRARY}
+! 
+!   ${PROJ_LIBRARY}
+!   ${GEOS_LIBRARY}
+!   ${GDAL_LIBRARY}
+!   ${SPATIALINDEX_LIBRARY}
+  )
+  
+! IF (WITH_INTERNAL_SPATIALITE)
+!   IF (WIN32 OR APPLE)
+!     TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY})
+!   ENDIF (WIN32 OR APPLE)
+!   IF (ANDROID)
+!     TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY} ${CHARSET_LIBRARY})
+!   ENDIF (ANDROID)
+!   IF (UNIX AND NOT ANDROID)
+!     TARGET_LINK_LIBRARIES(qgis_core pthread ${CMAKE_DL_LIBS})
+!   ENDIF (UNIX AND NOT ANDROID)
+! ELSE (WITH_INTERNAL_SPATIALITE)
+!   TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY})
+! ENDIF (WITH_INTERNAL_SPATIALITE)
+  
+  IF (APPLE)
+!   SET_TARGET_PROPERTIES(qgis_core PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+  ENDIF (APPLE)
+  
+  # install
+  
+! INSTALL(TARGETS qgis_core
+    RUNTIME DESTINATION ${QGIS_BIN_DIR}
+    LIBRARY DESTINATION ${QGIS_LIB_DIR}
+    ARCHIVE DESTINATION ${QGIS_LIB_DIR}
+    FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
+    PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
+  
++ # Mac dev frameworks
++ 
++ IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
++   INSTALL(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
++   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
++ ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
++ # install
++ 
++ #INSTALL(TARGETS qgis_gui
++ #  RUNTIME DESTINATION ${QGIS_BIN_DIR}
++ #  LIBRARY DESTINATION ${QGIS_LIB_DIR}
++ #  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
++ #  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
++ #  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
++ 
+  # ui headers to install, don't exist at target definition time, install manually
+  IF (APPLE)
+    INSTALL(FILES ${QGIS_GUI_UI_HDRS} DESTINATION ${QGIS_FW_SUBDIR}/qgis_gui.framework/Headers)
+***************
+*** 330,337 ****
+  # Mac dev frameworks
+  
+  IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+!   INSTALL(TARGETS qgis_gui FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
+    INSTALL(FILES ${QGIS_GUI_UI_HDRS} DESTINATION ${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/Headers)
+    INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_gui\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/qgis_gui\")")
+!   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/qgis_gui\")")
+  ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+--- 833,843 ----
+  # Mac dev frameworks
+  
+  IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+!   INSTALL(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
+! 
+    INSTALL(FILES ${QGIS_GUI_UI_HDRS} DESTINATION ${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/Headers)
++ 
+    INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_gui\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/qgis_gui\")")
+! 
+!   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/qgis_gui\")")
+  ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)

@@ -1,0 +1,19 @@
+*** a/doc/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/doc/CMakeLists.txt	Thu Sep 12 22:11:59 2013
+***************
+*** 32,38 ****
+      ADD_CUSTOM_TARGET(apidoc ALL
+              COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+              WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+!             DEPENDS qgis_core qgis_gui qgis_analysis
+              COMMENT "Generating API documentation" VERBATIM)
+      INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)
+    ELSE(DOXYGEN_FOUND)
+--- 32,38 ----
+      ADD_CUSTOM_TARGET(apidoc ALL
+              COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+              WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+!             DEPENDS qgis_core qgis_analysis
+              COMMENT "Generating API documentation" VERBATIM)
+      INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)
+    ELSE(DOXYGEN_FOUND)

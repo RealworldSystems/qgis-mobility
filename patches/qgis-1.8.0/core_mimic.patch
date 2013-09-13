@@ -1,0 +1,13 @@
+*** a/src/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/CMakeLists.txt	Thu Sep 12 20:14:01 2013
+***************
+*** 1,4 ****
+! ADD_SUBDIRECTORY(core)
+  ADD_SUBDIRECTORY(analysis)
+  ADD_SUBDIRECTORY(ui)
+  ADD_SUBDIRECTORY(gui)
+--- 1,4 ----
+! #ADD_SUBDIRECTORY(core)
+  ADD_SUBDIRECTORY(analysis)
+  ADD_SUBDIRECTORY(ui)
+  ADD_SUBDIRECTORY(gui)

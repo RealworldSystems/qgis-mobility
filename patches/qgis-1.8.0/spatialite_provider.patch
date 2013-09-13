@@ -1,0 +1,19 @@
+*** a/src/providers/spatialite/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/providers/spatialite/CMakeLists.txt	Thu Sep 12 18:34:34 2013
+***************
+*** 46,52 ****
+  
+  TARGET_LINK_LIBRARIES(spatialiteprovider
+    qgis_core
+!   qgis_gui
+  )
+  
+  IF(NOT WITH_INTERNAL_SPATIALITE)
+--- 46,52 ----
+  
+  TARGET_LINK_LIBRARIES(spatialiteprovider
+    qgis_core
+! #  qgis_gui
+  )
+  
+  IF(NOT WITH_INTERNAL_SPATIALITE)

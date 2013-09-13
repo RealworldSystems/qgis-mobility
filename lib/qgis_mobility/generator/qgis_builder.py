@@ -96,16 +96,11 @@ class QGisBuilder(Builder):
         os.rename(os.path.join(source_path, 'new.txt'),
                   os.path.join(source_path, 'CMakeLists.txt'))
 
-    def do_build(self):
-        """ Runs the actual build process """
-        # Downloading qgis is a big process. We escape to another directory and see if it is
-        # downloaded already
-        output = self.do_download_cache()
-        
-        # Resuming normal operations
-        self.unpack(output)
-        self.push_current_source_path(os.path.join(self.get_source_path(), self.library_name()))
-        
+    def do_target_patches(self):
+        """
+        Patches the build infrastructure so it reduced the amount of auxiliary
+        Shared Objects.
+        """
         self.patch("core_mimic.patch", strip=1)
         self.patch("core_replace.patch", strip=1)
         self.patch("mssql_provider.patch", strip=1)
@@ -119,6 +114,20 @@ class QGisBuilder(Builder):
         self.patch("gui_python.patch", strip=1)
         self.patch("gui_doc.patch", strip=1)
 
+    def do_build(self):
+        """ Runs the actual build process """
+        # Downloading qgis is a big process. We escape to another directory
+        # and see if it is downloaded already
+        output = self.do_download_cache()
+        
+        # Unpack again for the target build
+        self.unpack(output)
+
+        # We need qgis both on the base system as well as the target systen
+        self.push_current_source_path(os.path.join(self.get_source_path(), 
+                                                   self.library_name()))
+
+        self.do_target_patches()
         recon = self.get_recon()
 
         # QGis uses (as only library in this whole project) cmake. We need to set up a number
@@ -145,8 +154,10 @@ class QGisBuilder(Builder):
                    'src/providers/spatialite/CMakeLists.txt')
         
         # Do the argument dance
-        toolchain_src = os.path.join(self.get_core_patch_path(), 'cmake', 'android.toolchain.cmake')
-        toolchain_file = os.path.join(self.get_current_source_path(), 'android.toolchain.cmake')
+        toolchain_src = os.path.join(self.get_core_patch_path(), 
+                                     'cmake', 'android.toolchain.cmake')
+        toolchain_file = os.path.join(self.get_current_source_path(), 
+                                      'android.toolchain.cmake')
         shutil.copyfile(toolchain_src, toolchain_file)
         
         python_builder = PythonBuilder(self.get_recon())

@@ -1,0 +1,437 @@
+diff -crB /home/sjoerd/.qgis_mobility_generator_cache/source/qgis-1.8.0/qgis-1.8.0/src/plugins/compass/CMakeLists.txt src/plugins/compass/CMakeLists.txt
+*** a/src/plugins/compass/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/compass/CMakeLists.txt	Thu Sep 12 21:35:28 2013
+***************
+*** 38,44 ****
+  
+  TARGET_LINK_LIBRARIES(compassplugin
+    qgis_core
+!   qgis_gui
+    ${QT_MOBILITY_SENSORS_LIBRARY}
+  )
+  
+--- 38,44 ----
+  
+  TARGET_LINK_LIBRARIES(compassplugin
+    qgis_core
+! #  qgis_gui
+    ${QT_MOBILITY_SENSORS_LIBRARY}
+  )
+  
+
+diff -crB a/src/plugins/coordinate_capture/CMakeLists.txt src/plugins/coordinate_capture/CMakeLists.txt
+*** a/src/plugins/coordinate_capture/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/coordinate_capture/CMakeLists.txt	Thu Sep 12 21:35:39 2013
+***************
+*** 41,47 ****
+  
+  TARGET_LINK_LIBRARIES(coordinatecaptureplugin
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 41,47 ----
+  
+  TARGET_LINK_LIBRARIES(coordinatecaptureplugin
+    qgis_core
+! #  qgis_gui
+  )
+  
+  
+diff -crB a/src/plugins/delimited_text/CMakeLists.txt src/plugins/delimited_text/CMakeLists.txt
+*** a/src/plugins/delimited_text/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/delimited_text/CMakeLists.txt	Thu Sep 12 21:35:52 2013
+***************
+*** 36,42 ****
+  
+  TARGET_LINK_LIBRARIES(delimitedtextplugin
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 36,42 ----
+  
+  TARGET_LINK_LIBRARIES(delimitedtextplugin
+    qgis_core
+! #  qgis_gui
+  )
+  
+  
+diff -crB a/src/plugins/diagram_overlay/CMakeLists.txt src/plugins/diagram_overlay/CMakeLists.txt
+*** a/src/plugins/diagram_overlay/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/diagram_overlay/CMakeLists.txt	Thu Sep 12 21:36:03 2013
+***************
+*** 53,59 ****
+  
+  TARGET_LINK_LIBRARIES(diagramoverlay
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 53,59 ----
+  
+  TARGET_LINK_LIBRARIES(diagramoverlay
+    qgis_core
+! #  qgis_gui
+  )
+  
+  
+diff -crB a/src/plugins/dxf2shp_converter/CMakeLists.txt src/plugins/dxf2shp_converter/CMakeLists.txt
+*** a/src/plugins/dxf2shp_converter/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/dxf2shp_converter/CMakeLists.txt	Thu Sep 12 21:36:16 2013
+***************
+*** 43,49 ****
+  
+  TARGET_LINK_LIBRARIES(dxf2shpconverterplugin
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 43,49 ----
+  
+  TARGET_LINK_LIBRARIES(dxf2shpconverterplugin
+    qgis_core
+! #  qgis_gui
+  )
+  
+  
+diff -crB a/src/plugins/evis/CMakeLists.txt src/plugins/evis/CMakeLists.txt
+*** a/src/plugins/evis/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/evis/CMakeLists.txt	Thu Sep 12 21:36:28 2013
+***************
+*** 63,69 ****
+  
+  TARGET_LINK_LIBRARIES(evis
+    qgis_core
+!   qgis_gui
+    ${QT_QTSQL_LIBRARY}
+  )
+  
+--- 63,69 ----
+  
+  TARGET_LINK_LIBRARIES(evis
+    qgis_core
+! #  qgis_gui
+    ${QT_QTSQL_LIBRARY}
+  )
+  
+diff -crB a/src/plugins/georeferencer/CMakeLists.txt src/plugins/georeferencer/CMakeLists.txt
+*** a/src/plugins/georeferencer/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/georeferencer/CMakeLists.txt	Thu Sep 12 21:36:41 2013
+***************
+*** 85,91 ****
+  
+  TARGET_LINK_LIBRARIES(georefplugin
+    qgis_core
+!   qgis_gui
+    ${GSL_LIBRARIES}
+  )
+  
+--- 85,91 ----
+  
+  TARGET_LINK_LIBRARIES(georefplugin
+    qgis_core
+! #  qgis_gui
+    ${GSL_LIBRARIES}
+  )
+  
+diff -crB a/src/plugins/globe/CMakeLists.txt src/plugins/globe/CMakeLists.txt
+*** a/src/plugins/globe/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/globe/CMakeLists.txt	Thu Sep 12 21:36:55 2013
+***************
+*** 53,59 ****
+  
+  TARGET_LINK_LIBRARIES(globeplugin
+    qgis_core
+!   qgis_gui
+    ${QT_QTOPENGL_LIBRARY}
+    ${OSGDB_LIBRARY}
+    ${OSGGA_LIBRARY}
+--- 53,59 ----
+  
+  TARGET_LINK_LIBRARIES(globeplugin
+    qgis_core
+! #  qgis_gui
+    ${QT_QTOPENGL_LIBRARY}
+    ${OSGDB_LIBRARY}
+    ${OSGGA_LIBRARY}
+
+diff -crB a/src/plugins/gps_importer/CMakeLists.txt src/plugins/gps_importer/CMakeLists.txt
+*** a/src/plugins/gps_importer/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/gps_importer/CMakeLists.txt	Thu Sep 12 21:37:04 2013
+***************
+*** 46,52 ****
+  
+  TARGET_LINK_LIBRARIES(gpsimporterplugin
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 46,52 ----
+  
+  TARGET_LINK_LIBRARIES(gpsimporterplugin
+    qgis_core
+! #  qgis_gui
+  )
+  
+  
+diff -crB a/src/plugins/grass/CMakeLists.txt src/plugins/grass/CMakeLists.txt
+*** a/src/plugins/grass/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/grass/CMakeLists.txt	Thu Sep 12 21:37:27 2013
+***************
+*** 139,145 ****
+  
+  TARGET_LINK_LIBRARIES(grassplugin
+    qgisgrass
+!   qgis_gui
+    ${OPENPTY_LIBRARY}
+  )
+  
+--- 139,145 ----
+  
+  TARGET_LINK_LIBRARIES(grassplugin
+    qgisgrass
+! #  qgis_gui
+    ${OPENPTY_LIBRARY}
+  )
+  
+
+diff -crB a/src/plugins/heatmap/CMakeLists.txt src/plugins/heatmap/CMakeLists.txt
+*** a/src/plugins/heatmap/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/heatmap/CMakeLists.txt	Thu Sep 12 21:37:36 2013
+***************
+*** 40,45 ****
+  
+  TARGET_LINK_LIBRARIES(heatmapplugin
+    qgis_core
+!   qgis_gui
+  )
+
+--- 40,45 ----
+  
+  TARGET_LINK_LIBRARIES(heatmapplugin
+    qgis_core
+! #  qgis_gui
+  )
+
+
+diff -crB a/src/plugins/interpolation/CMakeLists.txt src/plugins/interpolation/CMakeLists.txt
+*** a/src/plugins/interpolation/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/interpolation/CMakeLists.txt	Thu Sep 12 21:37:58 2013
+***************
+*** 54,60 ****
+  TARGET_LINK_LIBRARIES(interpolationplugin
+    qgis_analysis
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 54,60 ----
+  TARGET_LINK_LIBRARIES(interpolationplugin
+    qgis_analysis
+    qgis_core
+! #  qgis_gui
+  )
+  
+
+diff -crB a/src/plugins/offline_editing/CMakeLists.txt src/plugins/offline_editing/CMakeLists.txt
+*** a/src/plugins/offline_editing/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/offline_editing/CMakeLists.txt	Thu Sep 12 21:38:10 2013
+***************
+*** 54,59 ****
+  
+  TARGET_LINK_LIBRARIES(offlineeditingplugin
+    qgis_core
+!   qgis_gui
+  )
+  
+--- 54,59 ----
+  
+  TARGET_LINK_LIBRARIES(offlineeditingplugin
+    qgis_core
+! #  qgis_gui
+  )
+  
+
+diff -crB a/src/plugins/oracle_raster/CMakeLists.txt src/plugins/oracle_raster/CMakeLists.txt
+*** a/src/plugins/oracle_raster/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/oracle_raster/CMakeLists.txt	Thu Sep 12 21:38:31 2013
+***************
+*** 42,47 ****
+  
+  TARGET_LINK_LIBRARIES(oracleplugin
+    qgis_core
+!   qgis_gui
+  )
+  
+--- 42,47 ----
+  
+  TARGET_LINK_LIBRARIES(oracleplugin
+    qgis_core
+! #  qgis_gui
+  )
+  
+
+diff -crB a/src/plugins/plugin_template/CMakeLists.txt src/plugins/plugin_template/CMakeLists.txt
+*** a/src/plugins/plugin_template/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/plugin_template/CMakeLists.txt	Thu Sep 12 21:38:45 2013
+***************
+*** 36,42 ****
+  
+  TARGET_LINK_LIBRARIES([pluginlcasename]plugin
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 36,42 ----
+  
+  TARGET_LINK_LIBRARIES([pluginlcasename]plugin
+    qgis_core
+! #  qgis_gui
+  )
+  
+  
+diff -crB a/src/plugins/raster_terrain_analysis/CMakeLists.txt src/plugins/raster_terrain_analysis/CMakeLists.txt
+*** a/src/plugins/raster_terrain_analysis/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/raster_terrain_analysis/CMakeLists.txt	Thu Sep 12 21:38:54 2013
+***************
+*** 45,51 ****
+  TARGET_LINK_LIBRARIES(rasterterrainplugin
+    qgis_analysis
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 45,51 ----
+  TARGET_LINK_LIBRARIES(rasterterrainplugin
+    qgis_analysis
+    qgis_core
+! #  qgis_gui
+  )
+  
+  
+diff -crB a/src/plugins/roadgraph/CMakeLists.txt src/plugins/roadgraph/CMakeLists.txt
+*** a/src/plugins/roadgraph/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/roadgraph/CMakeLists.txt	Thu Sep 12 21:39:03 2013
+***************
+*** 45,51 ****
+  
+  TARGET_LINK_LIBRARIES(roadgraphplugin
+    qgis_core
+!   qgis_gui
+    qgis_networkanalysis
+  )
+  
+--- 45,51 ----
+  
+  TARGET_LINK_LIBRARIES(roadgraphplugin
+    qgis_core
+! #  qgis_gui
+    qgis_networkanalysis
+  )
+  
+diff -crB a/src/plugins/spatialquery/CMakeLists.txt src/plugins/spatialquery/CMakeLists.txt
+*** a/src/plugins/spatialquery/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/spatialquery/CMakeLists.txt	Thu Sep 12 21:39:11 2013
+***************
+*** 45,51 ****
+  
+  TARGET_LINK_LIBRARIES(spatialqueryplugin
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 45,51 ----
+  
+  TARGET_LINK_LIBRARIES(spatialqueryplugin
+    qgis_core
+! #  qgis_gui
+  )
+  
+  
+diff -crB a/src/plugins/spit/CMakeLists.txt src/plugins/spit/CMakeLists.txt
+*** a/src/plugins/spit/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/spit/CMakeLists.txt	Thu Sep 12 21:39:29 2013
+***************
+*** 68,74 ****
+  TARGET_LINK_LIBRARIES(spitplugin
+    ${POSTGRES_LIBRARY}
+    qgis_core
+!   qgis_gui
+  )
+  
+  IF (PLUGINS_ALSO_BINARIES)
+--- 68,74 ----
+  TARGET_LINK_LIBRARIES(spitplugin
+    ${POSTGRES_LIBRARY}
+    qgis_core
+! #  qgis_gui
+  )
+  
+  IF (PLUGINS_ALSO_BINARIES)
+***************
+*** 78,84 ****
+    TARGET_LINK_LIBRARIES(spit
+      ${POSTGRES_LIBRARY}
+      qgis_core
+!     qgis_gui
+    )
+  ENDIF (PLUGINS_ALSO_BINARIES)
+  
+--- 78,84 ----
+    TARGET_LINK_LIBRARIES(spit
+      ${POSTGRES_LIBRARY}
+      qgis_core
+! #    qgis_gui
+    )
+  ENDIF (PLUGINS_ALSO_BINARIES)
+  
+diff -crB a/src/plugins/sqlanywhere/CMakeLists.txt src/plugins/sqlanywhere/CMakeLists.txt
+*** a/src/plugins/sqlanywhere/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/sqlanywhere/CMakeLists.txt	Thu Sep 12 21:39:48 2013
+***************
+*** 60,66 ****
+  
+  TARGET_LINK_LIBRARIES(sqlanywhereplugin
+    qgis_core
+!   qgis_gui
+    qgissqlanyconnection
+  )
+  
+--- 60,66 ----
+  
+  TARGET_LINK_LIBRARIES(sqlanywhereplugin
+    qgis_core
+! #  qgis_gui
+    qgissqlanyconnection
+  )
+  
+diff -crB a/src/plugins/zonal_statistics/CMakeLists.txt src/plugins/zonal_statistics/CMakeLists.txt
+*** a/src/plugins/zonal_statistics/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/plugins/zonal_statistics/CMakeLists.txt	Thu Sep 12 21:39:56 2013
+***************
+*** 46,52 ****
+  TARGET_LINK_LIBRARIES(zonalstatisticsplugin
+    qgis_analysis
+    qgis_core
+!   qgis_gui
+  )
+  
+  
+--- 46,52 ----
+  TARGET_LINK_LIBRARIES(zonalstatisticsplugin
+    qgis_analysis
+    qgis_core
+! #  qgis_gui
+  )
+  
+  

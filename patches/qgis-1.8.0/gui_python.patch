@@ -1,0 +1,19 @@
+*** a/python/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/python/CMakeLists.txt	Thu Sep 12 22:10:29 2013
+***************
+*** 78,84 ****
+  FILE(GLOB sip_files_gui gui/*.sip)
+  SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
+  SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
+! ADD_SIP_PYTHON_MODULE(qgis.gui gui/gui.sip qgis_core qgis_gui)
+  
+  # additional analysis includes
+  INCLUDE_DIRECTORIES(
+--- 78,84 ----
+  FILE(GLOB sip_files_gui gui/*.sip)
+  SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
+  SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
+! ADD_SIP_PYTHON_MODULE(qgis.gui gui/gui.sip qgis_core)
+  
+  # additional analysis includes
+  INCLUDE_DIRECTORIES(

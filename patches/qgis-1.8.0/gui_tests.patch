@@ -1,0 +1,20 @@
+*** a/tests/src/gui/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/tests/src/gui/CMakeLists.txt	Thu Sep 12 22:07:51 2013
+***************
+*** 94,100 ****
+      ${GEOS_LIBRARY}
+      ${GDAL_LIBRARY}
+      qgis_core
+!     qgis_gui)
+    ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+    #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
+    #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
+--- 94,101 ----
+      ${GEOS_LIBRARY}
+      ${GDAL_LIBRARY}
+      qgis_core
+!     #qgis_gui
+!   )
+    ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+    #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
+    #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}

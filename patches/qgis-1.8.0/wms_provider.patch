@@ -1,0 +1,19 @@
+*** a/src/providers/wms/CMakeLists.txt	Tue Jun 12 21:28:18 2012
+--- b/src/providers/wms/CMakeLists.txt	Thu Sep 12 18:34:51 2013
+***************
+*** 23,29 ****
+  
+  TARGET_LINK_LIBRARIES(wmsprovider
+    qgis_core
+!   qgis_gui
+  )
+  
+  INSTALL (TARGETS wmsprovider
+--- 23,29 ----
+  
+  TARGET_LINK_LIBRARIES(wmsprovider
+    qgis_core
+! #  qgis_gui
+  )
+  
+  INSTALL (TARGETS wmsprovider
