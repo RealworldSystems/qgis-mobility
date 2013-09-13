@@ -59,6 +59,7 @@ class PySpatialiteBuilder(PythonianBuilder):
         base_source_path = os.path.join(self.get_source_path(), 
                                         self.library_name())
         self.push_current_source_path(base_source_path)
+        self.patch("pyspatialite.patch", strip=1)
         self.run_py_setup_build_and_install()
         self.pop_current_source_path()
         shutil.rmtree(os.path.join(base_source_path))

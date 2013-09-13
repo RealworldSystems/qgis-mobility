@@ -1,0 +1,26 @@
+*** a/lib/dbapi2.py	Wed Jan 11 21:54:12 2012
+--- b/lib/dbapi2.py	Fri Sep  6 15:06:34 2013
+***************
+*** 47,55 ****
+  def TimestampFromTicks(ticks):
+      return Timestamp(*time.localtime(ticks)[:6])
+  
+! version_info = tuple([int(x) for x in version.split(".")])
+  sqlite_version_info = tuple([int(x) for x in sqlite_version.split(".")])
+  
+  Binary = buffer
+  
+  def register_adapters_and_converters():
+--- 47,58 ----
+  def TimestampFromTicks(ticks):
+      return Timestamp(*time.localtime(ticks)[:6])
+  
+! version_sanitized = version.split("-")[0]
+! version_info = tuple([int(x) for x in version_sanitized.split(".")])
+  sqlite_version_info = tuple([int(x) for x in sqlite_version.split(".")])
+  
++ del(version_sanitized)
++ 
+  Binary = buffer
+  
+  def register_adapters_and_converters():
