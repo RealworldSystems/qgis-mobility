@@ -26,13 +26,35 @@ import re
 class Builder(object):
     """ Represents an abstract object to aid in building the different sources """
     
-    def __init__(self, recon):
+    def __init__(self, recon, arch="android"):
         self.verify()
         self._current_path = self._get_current_path()
         self._library_name = self.library_name()
         self._recon = recon
-        self._sourcepaths = [os.path.join(self.cache_path, "source", self._library_name)]
+        self._arch = arch
+        # Source paths are used for the target build
+        source_path = os.path.join(self.cache_path, 
+                                   "source", 
+                                   self._library_name)
+        # Host source paths are used for the host build (where applicable)
+        host_source_path = os.path.join(self.cache_path, 
+                                        "source_host", 
+                                        self._library_name)
+        self._sourcepaths = [source_path]
+        self._host_sourcepaths = [host_source_path]
     
+    def set_current_arch(self, arch):
+        """
+        Sets the architecture to use. Use "host" to use the host target.
+        """
+        self._arch = arch
+
+    def get_current_arch(self):
+        """
+        Returns the current set architecture
+        """
+        return self._arch
+
     def get_recon(self):
         """ Returns the recon object """
         return self._recon
@@ -46,6 +68,13 @@ class Builder(object):
     def human_name(self):
         raise ValueError("Should implement the human_name method")
 
+    def get_library_path(self, arch=None):
+        """
+        Returns the output library path
+        """
+        return os.path.join(self.get_build_path(arch), 'lib')
+                
+
     def salt_flags(self, flags):
         """ Provides a base flag salter """
         libs = os.path.join(self.get_build_path(), 'lib')
@@ -53,10 +82,12 @@ class Builder(object):
         flags['LDFLAGS'] += ' -L' + libs
         flags['CFLAGS'] += ' -I' + includes
         flags['CXXFLAGS'] += ' -I' + includes
+        lib_path = self.get_library_path()
         if not 'LD_LIBRARY_PATH' in flags:
-            flags['LD_LIBRARY_PATH'] = os.path.join(self.get_build_path(), 'lib')
+            flags['LD_LIBRARY_PATH'] = lib_path
         else:
-            flags['LD_LIBRARY_PATH'] += os.pathsep + os.path.join(self.get_build_path(), 'lib')
+            flags['LD_LIBRARY_PATH'] = os.pathsep.join(
+                [flags['LD_LIBRARY_PATH'], lib_path])
         return flags
 
     def insert_config_path_flag(self, flags):
@@ -69,10 +100,12 @@ class Builder(object):
         return flags
 
     def push_current_source_path(self, path):
-        self._sourcepaths.extend([path])
+        if self._arch == 'host': self._host_sourcepaths.extend([path])
+        else: self._sourcepaths.extend([path])
 
     def pop_current_source_path(self):
-        self._sourcepaths.pop()
+        if self._arch == 'host': self._host_sourcepaths.pop()
+        else: self._sourcepaths.pop()
 
 
     def make(self):
@@ -80,7 +113,8 @@ class Builder(object):
         print self.human_name()
         print "=" * 80
         if not self.build_finished:
-            self.purge()
+            self.purge("host")
+            self.purge("android")
             self._verify_cache()
             self._verify_build_path()
             self._verify_source_path()
@@ -92,13 +126,13 @@ class Builder(object):
     def remove(self):
         os.remove(self.get_build_finished_file()) 
 
-    def purge(self):
-        if os.path.exists(self.get_build_path()):
-            shutil.rmtree(self.get_build_path())
-        if os.path.exists(self.get_source_path()):
-            shutil.rmtree(self.get_source_path())
-        if os.path.exists(self.get_include_path()):
-            shutil.rmtree(self.get_include_path())
+    def purge(self, arch):
+        if os.path.exists(self.get_build_path(arch)):
+            shutil.rmtree(self.get_build_path(arch))
+        if os.path.exists(self.get_source_path(arch)):
+            shutil.rmtree(self.get_source_path(arch))
+        if os.path.exists(self.get_include_path(arch)):
+            shutil.rmtree(self.get_include_path(arch))
         
     def _get_current_path(self):
         return os.path.realpath(os.path.dirname(
@@ -146,28 +180,50 @@ class Builder(object):
     
     patch_path = property(get_patch_path, None, None, "The path with the patches")
     
-    def get_build_path(self):
-        return os.path.join(self.cache_path, "build", self._library_name)
+    def get_build_path(self, arch=None):
+        """
+        Returns the build path of the output which should be used. If the
+        host parameter is set, this will differentiate by appending _host to
+        the include path.
+        """
+        arch = self._arch if arch == None else arch
+        build_dir = 'build_host' if arch == 'host' else 'build'
+        return os.path.join(self.cache_path, build_dir, self._library_name)
     
     build_path = property(get_build_path, None, None, "The path with the builds")
 
-
-    def get_output_library_path(self):
+    def get_output_library_path(self, host=False):
         """ Returns the path where normally libraries should be found """
-        return os.path.join(self.get_build_path(), 'lib')
+        return os.path.join(self.get_build_path(host=host), 'lib')
 
-    def get_output_binaries_path(self):
+    def get_output_binaries_path(self, host=False):
         """ Returns the path where normally the binaries should be found """
-        return os.path.join(self.get_build_path(), 'bin')
+        return os.path.join(self.get_build_path(host=host), 'bin')
     
-    def get_include_path(self):
-        return os.path.join(self.cache_path, "include", self._library_name)
+    def get_include_path(self, arch=None):
+        """
+        Returns the include path of the headers which should be used. If the
+        host parameter is set, this will differentiate by appending _host to
+        the include path.
+        """
+        arch = self._arch if arch == None else arch
+        include_dir = 'include_host' if arch == 'host' else 'include'
+        return os.path.join(self.cache_path, include_dir, self._library_name)
 
-    def get_source_path(self):
-        return os.path.join(self.cache_path, "source", self._library_name)
+    def get_source_path(self, arch=None):
+        """
+        Returns the source path of the sources which should be used. If the
+        host parameter is set, this will differentiate by appending _host to
+        the include path.
+        """
+        arch = self._arch if arch == None else arch
+        source_dir = 'source_host' if arch == 'host' else 'source'
+        return os.path.join(self.cache_path, source_dir, self._library_name)
     
     def get_current_source_path(self):
-        return self._sourcepaths[-1]
+        if self._arch == 'host': source_path = self._host_sourcepaths[-1]
+        else: source_path = self._sourcepaths[-1]
+        return source_path
 
     def get_toolchain_prefix(self):
         """ Returns the prefix of the GCC toolchain """
@@ -178,24 +234,34 @@ class Builder(object):
         return self.get_toolchain_prefix() + tool_name
 
     def get_default_toolchain_mappings(self):
-        return { 'CC'     : self.get_tool('gcc'),
-                 'CXX'    : self.get_tool('g++'),
-                 'LD'     : self.get_tool('ld'),
-                 'AR'     : self.get_tool('ar'),
-                 'STRIP'  : self.get_tool('strip'),
-                 'RANLIB' : self.get_tool('ranlib'),
-                 'AS'     : self.get_tool('as') }
+        if self._arch == 'host':
+            return {}
+        else:
+            return { 'CC'     : self.get_tool('gcc'),
+                     'CXX'    : self.get_tool('g++'),
+                     'LD'     : self.get_tool('ld'),
+                     'AR'     : self.get_tool('ar'),
+                     'STRIP'  : self.get_tool('strip'),
+                     'RANLIB' : self.get_tool('ranlib'),
+                     'AS'     : self.get_tool('as') }
 
 
     def get_default_flags(self):
-        cflags = '-DANDROID=ON -Wno-psabi -O2 -mthumb'
-        ldflags = '-Wl,--fix-cortex-a8'
+        if self._arch == 'android':
+            cflags = '-DANDROID=ON -Wno-psabi -O2 -mthumb'
+            ldflags = '-Wl,--fix-cortex-a8'
+        else:
+            cflags = '-Wno-psabi -O2'
+            ldflags = ''
         return { 'CFLAGS'   : cflags,
                  'LDFLAGS'  : ldflags,
                  'CXXFLAGS' : cflags + ' --std=gnu++0x' }
 
     def get_default_configure_flags(self):
-        return ['--host=arm-linux-androideabi', '--prefix=' + self.get_build_path()]
+        host = (self._arch == 'host')
+        if host: return ['--prefix=' + self.get_build_path()]
+        else: return ['--host=arm-linux-androideabi', 
+                      '--prefix=' + self.get_build_path()]
     
     def get_path(self):
         default_path = ''
@@ -213,14 +279,20 @@ class Builder(object):
     def _verify_build_path(self):
         if not os.path.exists(self.get_build_path()):
             os.makedirs(self.get_build_path())
+        if not os.path.exists(self.get_build_path("host")):
+            os.makedirs(self.get_build_path("host"))
 
     def _verify_source_path(self):
         if not os.path.exists(self.get_source_path()):
             os.makedirs(self.get_source_path())
+        if not os.path.exists(self.get_source_path("host")):
+            os.makedirs(self.get_source_path("host"))
 
     def _verify_include_path(self):
         if not os.path.exists(self.get_include_path()):
             os.makedirs(self.get_include_path())
+        if not os.path.exists(self.get_include_path("host")):
+            os.makedirs(self.get_include_path("host"))
 
     def verify(self):
         if not 'HOME' in os.environ: 
@@ -330,12 +402,13 @@ class Builder(object):
         
         flags = self.get_default_flags()
         for flag in flags: environmental.extend([flag + '=' + flags[flag]])
-        
-        mappings = self.get_default_toolchain_mappings()
-        for flag in mappings: environmental.extend([flag + '=' + mappings[flag]])
+
+        if not self._arch == 'host':
+            mappings = self.get_default_toolchain_mappings()
+            for flag in mappings: environmental.extend([flag + '=' + mappings[flag]])
         
         if where == None: where = self.get_current_source_path()
-
+        
         args = [os.path.join(where, 'configure')]
         args.extend(environmental)
         args.extend(self.get_default_configure_flags())

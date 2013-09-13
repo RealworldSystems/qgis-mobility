@@ -19,6 +19,7 @@
 from qgis_mobility.generator.builder import Builder
 import distutils.dir_util
 import os
+import shutil
 
 class SQLiteBuilder(Builder):
     """ Represents the build strategy for the SQLite library """
@@ -36,14 +37,40 @@ class SQLiteBuilder(Builder):
         self.insert_config_path_flag(flags)
         return flags
 
+    def do_build_for(self, arch, output):
+        """ 
+        If arch is set to "host", the build is done for the host environment.
+        If arch is set to "target", the build is done for the target environment.
+        """
+        host = (arch == "host")
+        self.set_current_arch(arch)
+        
+        self.unpack(output)
+        
+        base_source_path = os.path.join(self.get_source_path(), 
+                                        self.library_name())
+        
+        self.push_current_source_path(base_source_path)
+        self.fix_config_sub_and_guess()
+        
+        if not host:
+            self.patch('sqlite.patch', strip=1)
+        
+        self.run_autotools_and_make()
+        
+        includes_from = os.path.join(self.get_build_path(), 'include')
+        includes_to = self.get_include_path()
+        
+        distutils.dir_util.copy_tree(includes_from, includes_to)
+
+        self.pop_current_source_path()
+        shutil.rmtree(base_source_path)
+        
+
     def do_build(self):
         """ Runs the actual build process """
-        output = self.wget('http://www.sqlite.org/' + self.library_name() + '.tar.gz')
-        self.unpack(output)
-        self.push_current_source_path(os.path.join(self.get_source_path(), self.library_name()))
-        self.fix_config_sub_and_guess()
-        self.patch('sqlite.patch', strip=1)
-        self.run_autotools_and_make()        
-        distutils.dir_util.copy_tree(os.path.join(self.get_build_path(), 'include'),
-                                     os.path.join(self.get_include_path()))
+        tarball_url = "http://www.sqlite.org/%s.tar.gz" % self.library_name()
+        output = self.wget(tarball_url)
+        self.do_build_for("host", output)
+        self.do_build_for("android", output)
         self.mark_finished()

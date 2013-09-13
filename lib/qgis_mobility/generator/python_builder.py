@@ -22,6 +22,7 @@ import subprocess
 import multiprocessing
 import shutil
 import collections
+import sys
 
 from qgis_mobility.generator.sqlite_builder import SQLiteBuilder
 
@@ -53,9 +54,15 @@ class PythonBuilder(Builder):
                 os.remove(os.path.join(self.cache_path, fn))
 
 
-    def get_include_path(self):
+    def get_include_path(self, arch=None):
         """ The library path is in the build path """
-        return os.path.join(self.get_build_path(), 'include', 'python2.7')
+        host = (arch == 'host')
+        if host:
+            executable = sys.executable
+            host_python = os.path.dirname(os.path.dirname(executable))
+            return os.path.join(host_python, 'include', 'python2.7')
+        else:
+            return os.path.join(self.get_build_path(arch), 'include', 'python2.7')
     
     def do_download_cache(self):
         """

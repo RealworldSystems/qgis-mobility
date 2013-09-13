@@ -26,6 +26,7 @@ from qgis_mobility.generator.gdal_builder import GDALBuilder
 from qgis_mobility.generator.qwt_builder import QWTBuilder
 from qgis_mobility.generator.spatialindex_builder import SpatialindexBuilder
 from qgis_mobility.generator.python_builder import PythonBuilder
+from qgis_mobility.generator.pyspatialite_builder import PySpatialiteBuilder
 from qgis_mobility.generator.qgis_builder import QGisBuilder
 from qgis_mobility.generator.sip_builder import SipBuilder
 from qgis_mobility.generator.pyqt_builder import PyQtBuilder
@@ -40,21 +41,22 @@ import os
 from collections import namedtuple
 
 __dependency_class_chain = [
-        StandaloneToolchain,
-        SQLiteBuilder,
-        GeosBuilder,
-        Proj4Builder,
-        SpatialiteBuilder,
-        ExpatBuilder,
-        GDALBuilder,
-        QWTBuilder,
-        SpatialindexBuilder,
-        PythonBuilder,
-        SipBuilder,
-        PyQtBuilder,
-        PyQtMobilityBuilder,
-        QGisBuilder,
-        RuntimeBuilder,
+    StandaloneToolchain,
+    SQLiteBuilder,
+    GeosBuilder,
+    Proj4Builder,
+    SpatialiteBuilder,
+    ExpatBuilder,
+    GDALBuilder,
+    QWTBuilder,
+    SpatialindexBuilder,
+    PythonBuilder,
+    PySpatialiteBuilder,
+    SipBuilder,
+    PyQtBuilder,
+    PyQtMobilityBuilder,
+    QGisBuilder,
+    RuntimeBuilder,
 ] 
 
 

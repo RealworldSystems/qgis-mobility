@@ -32,9 +32,9 @@ class PythonianBuilder(Builder):
         self._python_builder = PythonBuilder(recon)
         self._host_python_vars = self._python_builder.get_host_python_vars()
     
-    def purge(self):
-        if os.path.exists(self.get_source_path()):
-            shutil.rmtree(self.get_source_path())
+    def purge(self, arch):
+        if os.path.exists(self.get_source_path(arch)):
+            shutil.rmtree(self.get_source_path(arch))
 
 
     def get_build_finished_file(self):
@@ -45,13 +45,13 @@ class PythonianBuilder(Builder):
         return os.path.join(
             self.cache_path, '.py_fini' + self._library_name)
 
-    def get_include_path(self):
+    def get_include_path(self, arch=None):
         """ Overrides the default include path """
-        return self._python_builder.get_include_path()
+        return self._python_builder.get_include_path(arch)
 
-    def get_build_path(self):
+    def get_build_path(self, arch=None):
         """ Overrides the default build path """
-        return self._python_builder.get_build_path()
+        return self._python_builder.get_build_path(arch)
 
     def get_output_binaries_path(self):
         """ Overrides the default output binaries path """
@@ -105,10 +105,43 @@ class PythonianBuilder(Builder):
                                    env=our_env)
         process.communicate(None)
         if process.returncode != 0:
-            raise ValueError("SIP Configure failed")
+            raise ValueError("Python Configure failed")
             
         print "Python Configure Done"
         
+    def run_py_setup(self, option="build"):
+        """ Adds the setup.py runner, akin configure/make """
+        arch = self.get_current_arch()
+        host = (arch == 'host')
+        
+        our_env = dict(os.environ).copy()
+        mappings = self.get_default_toolchain_mappings()
+        if not host: 
+            our_env['PATH'] = os.pathsep.join([self.get_recon().qt_tools_path, 
+                                               self.get_path()])
+            our_env['QMAKESPEC'] = 'android-g++'
+        for mapping in mappings: our_env[mapping] = mappings[mapping]
+        
+        args = [self._host_python_vars.python,
+                'setup.py', option]
+
+        print "PATH:", our_env['PATH']
+        
+        print "Process arguments:", args
+        
+        process = subprocess.Popen(args, 
+                                   cwd=self.get_current_source_path(),
+                                   env=our_env)
+        process.communicate(None)
+        if process.returncode != 0:
+            raise ValueError("Setup.py failed")
+            
+        print "Setup.py Done"
+    
+    def run_py_setup_build_and_install(self):
+        self.run_py_setup("build")
+        self.run_py_setup("install")
+
     def run_make(self, install=False, host=False, command=None, makeopts=[]):
         args = ['make']
         

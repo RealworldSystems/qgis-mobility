@@ -19,6 +19,7 @@
 from qgis_mobility.generator.builder import Builder
 import distutils.dir_util
 import os
+import shutil
 
 class GeosBuilder(Builder):
     """ Represents the build strategy for the Geos library """
@@ -58,12 +59,8 @@ class GeosBuilder(Builder):
         flags.extend(['--disable-inline'])
         return flags
 
-    def do_build(self):
-        """ Runs the actual build process """
-        self.run_svn_checkout('http://svn.osgeo.org/geos/tags/3.2.3', 'geos-3.2.3')
-        self.push_current_source_path(os.path.join(self.get_source_path(), 'geos-3.2.3'))
+    def do_patches(self):
         self.patch('int64_crosscomp.patch', strip=1)
-        self.run_autogen()
         self.patch('geos.patch', strip=1)
         self.patch('CoordinateSequenceFactory.h.patch', strip=1)
         self.patch('Bintree.cpp.patch', strip=1)
@@ -78,13 +75,36 @@ class GeosBuilder(Builder):
         self.patch('TaggedLineString.h.patch', strip=1)
         self.patch('TaggedLineStringSimplifier.h.patch', strip=1)
         self.patch('swig.patch', strip=1)
+
+    def do_android(self):
+        self.do_patches()
         self.sixty_four()
         self.sed_i('s/hardcode_into_libs=.*/hardcode_into_libs=no/g', 'configure')
         self.sed_ir('s/(\-release \@VERSION_MAJOR\@\.\@VERSION_MINOR\@\.@VERSION_PATCH\@ \\\)/\-avoid\-version \\\/g', 'source/Makefile.am')
         self.sed_ir('s/(\-version\-info \@CAPI_INTERFACE_CURRENT\@\:\@CAPI_INTERFACE_REVISION\@\:\@CAPI_INTERFACE_AGE\@ \\\)/-avoid\-version \\\/g', 'capi/Makefile.am')
-        #self.sed_i('s/hardcode_into_libs/leave_me_alone/g', 'ltmain.sh')
+        
+    def do_build_for(self, arch):
+        self.set_current_arch(arch)
+        host = (arch == 'host')
+        self.run_svn_checkout('http://svn.osgeo.org/geos/tags/3.2.3', 'geos-3.2.3')
+        base_source_path = os.path.join(self.get_source_path(), 'geos-3.2.3')
+        self.push_current_source_path(base_source_path)
+        self.run_autogen()
+        if host:
+            self.do_patches()
+        else:
+            self.do_android()
         self.fix_config_sub_and_guess()
         self.run_autotools_and_make() 
         distutils.dir_util.copy_tree(os.path.join(self.get_build_path(), 'include'),
                                      os.path.join(self.get_include_path()))
+        self.pop_current_source_path()
+        shutil.rmtree(base_source_path)
+
+
+    def do_build(self):
+        """ Runs the actual build process """
+        self.do_build_for('host')
+        self.do_build_for('android')
+
         self.mark_finished()
