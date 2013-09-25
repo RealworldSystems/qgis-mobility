@@ -41,10 +41,11 @@ class GeosBuilder(Builder):
     def get_default_flags(self):
         """ Modify the flags to add the sixty_four business """
         flags = Builder.get_default_flags(self)
-        flags['CFLAGS'] += ' -imacros ' + os.path.join(
-            self.get_current_source_path(), 'sixty_four.h')
-        flags['CXXFLAGS'] += ' -imacros ' + os.path.join(
-            self.get_current_source_path(), 'sixty_four.h')
+        if not (self.get_current_arch() == 'host'):
+            flags['CFLAGS'] += ' -imacros ' + os.path.join(
+                self.get_current_source_path(), 'sixty_four.h')
+            flags['CXXFLAGS'] += ' -imacros ' + os.path.join(
+                self.get_current_source_path(), 'sixty_four.h')
         flags['LIBS'] = '-lsupc++ -lstdc++'
         return flags
     
@@ -60,7 +61,6 @@ class GeosBuilder(Builder):
         return flags
 
     def do_patches(self):
-        self.patch('int64_crosscomp.patch', strip=1)
         self.patch('geos.patch', strip=1)
         self.patch('CoordinateSequenceFactory.h.patch', strip=1)
         self.patch('Bintree.cpp.patch', strip=1)
@@ -77,6 +77,7 @@ class GeosBuilder(Builder):
         self.patch('swig.patch', strip=1)
 
     def do_android(self):
+        self.patch('int64_crosscomp.patch', strip=1)
         self.do_patches()
         self.sixty_four()
         self.sed_i('s/hardcode_into_libs=.*/hardcode_into_libs=no/g', 'configure')
