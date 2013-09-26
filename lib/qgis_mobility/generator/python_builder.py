@@ -47,6 +47,9 @@ class PythonBuilder(Builder):
         return os.pathsep.join([self.get_recon().get_ndk_path(),
                                 Builder.get_path(self)])
 
+    def purge(self, arch):
+        if not (arch == 'host'): Builder.purge(self, arch)
+
     def remove(self):
         Builder.remove(self)
         for fn in os.listdir(self.cache_path):

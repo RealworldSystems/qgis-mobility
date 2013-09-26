@@ -192,13 +192,15 @@ class Builder(object):
     
     build_path = property(get_build_path, None, None, "The path with the builds")
 
-    def get_output_library_path(self, host=False):
+    def get_output_library_path(self, arch=None):
         """ Returns the path where normally libraries should be found """
-        return os.path.join(self.get_build_path(host=host), 'lib')
+        arch = self._arch if arch == None else arch
+        return os.path.join(self.get_build_path(arch=arch), 'lib')
 
-    def get_output_binaries_path(self, host=False):
+    def get_output_binaries_path(self, arch=None):
         """ Returns the path where normally the binaries should be found """
-        return os.path.join(self.get_build_path(host=host), 'bin')
+        arch = self._arch if arch == None else arch
+        return os.path.join(self.get_build_path(arch=arch), 'bin')
     
     def get_include_path(self, arch=None):
         """
