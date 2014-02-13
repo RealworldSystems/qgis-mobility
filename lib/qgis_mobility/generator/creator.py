@@ -109,6 +109,15 @@ class HostConfig(object):
         """
         return self.host_config.name
 
+    def version(self):
+        """
+        Returns the version of the given application (if any is found)
+        """
+        try:
+            return str(self.host_config.version)
+        except Exception:
+            return "1.0"
+
 class Creator(object):
     """
     The creator is responsible for aiding in the process of application
@@ -374,6 +383,10 @@ class Creator(object):
         et = ET.ElementTree()
         et.parse(os.path.join(android_out, 'AndroidManifest.xml'))
         et.getroot().attrib['package'] = self.host_config.package_name()
+        version_name = '{http://schemas.android.com/apk/res/android}versionName'
+        v = self.host_config.version()
+        print "Setting version: {0}".format(v)
+        et.getroot().attrib[version_name] = v
         et.write(os.path.join(android_out, 'AndroidManifest.xml'),  'utf-8', True)
 
         # set derived normal name in ant file
