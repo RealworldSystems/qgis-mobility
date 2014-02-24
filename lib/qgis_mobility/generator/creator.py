@@ -189,7 +189,7 @@ class Creator(object):
             joined = os.path.join(self.working_folder, dirname, filename)
             print("Compiling {0}\n      --> {0}c".format(joined))
             py_compile.compile(joined, joined + 'c', joined, True)
-            return filename + 'c'
+            return self.host_config.transform_file(dirname, filename + 'c')
         return self.host_config.transform_file(dirname, filename)
 
     def __gather_files_to_pack(self, path):

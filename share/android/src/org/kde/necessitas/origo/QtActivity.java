@@ -32,6 +32,8 @@ import java.io.InputStream;
 import java.io.IOError;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 
 import java.lang.reflect.Method;
 import java.lang.StringBuilder;
@@ -40,6 +42,7 @@ import java.lang.System;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 
 import @R@;
 
@@ -307,10 +310,28 @@ public class QtActivity extends Activity
 			}
 		} // end for all files in res/raw
 	}
+
+	/**
+	 * Android does not set the native "LANGUAGE" environment variable,
+	 * to force this, we need to do some twiddling through the C++ layer.
+	 */
+	private void i18nJavaPhase() throws Exception {
+		String filesDir = this.getFilesDir().getAbsolutePath();
+		String language = Locale.getDefault().toString();
+		if (language == null) {
+			language = "en_US";
+		}
+		FileWriter fstream = new FileWriter(filesDir + "/__language__");
+		BufferedWriter out = new BufferedWriter(fstream);
+		out.write(language);
+		out.close();
+	}
+	
 	private void startApp(final boolean firstStart)
 	{
 		try
 			{
+				i18nJavaPhase();
 
 				String filesDir = this.getFilesDir().getAbsolutePath();
 				
