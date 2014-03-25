@@ -118,6 +118,18 @@ class HostConfig(object):
         except Exception:
             return "1.0"
 
+    def setup_args(self, working_folder, args):
+        """
+        Attempts to run the setup function of the 
+        """
+        setattr(self.host_config, 'working_folder', working_folder)
+        setup_func = None
+        try:
+            setup_func = getattr(self.host_config, 'setup')
+        except Exception: pass
+        if setup_func:
+            setup_func(*args)
+
 class Creator(object):
     """
     The creator is responsible for aiding in the process of application
@@ -187,9 +199,11 @@ class Creator(object):
         if fnmatch.fnmatch(filename, '*.pyo'): return None
         if fnmatch.fnmatch(filename, '*.py'):
             joined = os.path.join(self.working_folder, dirname, filename)
-            print("Compiling {0}\n      --> {0}c".format(joined))
-            py_compile.compile(joined, joined + 'c', joined, True)
-            return self.host_config.transform_file(dirname, filename + 'c')
+            should_compile = self.host_config.transform_file(dirname, filename + 'c')
+            if should_compile:
+                print("Compiling {0}\n      --> {0}c".format(joined))
+                py_compile.compile(joined, joined + 'c', joined, True)
+            return should_compile
         return self.host_config.transform_file(dirname, filename)
 
     def __gather_files_to_pack(self, path):
@@ -216,7 +230,7 @@ class Creator(object):
         self.__setup(path)
         outdir = self.__check_out_dir(self.working_folder)
         app_zip = os.path.join(outdir, 'application.zip')
-        if os.path.exists(app_zip): os.remove(app_zip)
+        if os.path.exists(app_zip): os.remove(app_zip)        
         zf = ZipFile(app_zip, "w")
         for filename in self.__gather_files_to_pack(self.working_folder):
             name = filename[len(self.working_folder):]
@@ -427,9 +441,12 @@ class Creator(object):
             raise ValueError("Failed Process: " + args[0])
 
 
-    def make_apk_debug(self, path):
+    def make_apk_debug(self, path, *args):
         self.__setup(path)
 
+        # Instruct the host configuration to read additional setup parameters
+        self.host_config.setup_args(self.working_folder, args)
+        
         self.pack(path)
         self.pack_python(path)
         self.android(path)

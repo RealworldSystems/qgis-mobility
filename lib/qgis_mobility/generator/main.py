@@ -146,10 +146,15 @@ def __parsecommand(expression, parameters, recipe):
     """
     targets = __workout_targets(recipe)
     receiver, attr = targets[expression]
-    if (len(inspect.getargspec(attr).args) - 1) != len(parameters):
+    argspec = inspect.getargspec(attr)
+    has_varargs = not argspec.varargs is None
+    expected_arglen = (len(argspec.args) - 1)
+    if has_varargs:
+        if expected_arglen > len(parameters):
+            raise ValueError("Count of parameters is off")
+    elif expected_arglen != len(parameters):
         raise ValueError("Count of parameters is off")
     attr(*parameters)
-        
 
 def run(cache_path):
     """
